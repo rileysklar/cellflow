@@ -1,0 +1,156 @@
+---
+description: 
+globs: 
+---
+App Architecture: Manufacturing Efficiency Tracking System
+🔗App Demo on Loom 
+Overview
+The application is designed for industrial production facilities to track and optimize manufacturing efficiency. It allows users to log machine cycles, track bottlenecks, measure cycle times, and adjust production standards dynamically. The system will be built using Next.js, ShadCN, and React for the frontend, with a FastAPI layer and PostgreSQL database for the backend. Deployment will be handled via Fly.io using Docker and Docker Compose, with a mono repo structure to manage services. The app will leverage Orval for API interaction and implement cursor rules for both the frontend and backend.
+
+Technology Stack
+Frontend: Next.js, React, ShadCN (for UI components)
+Backend: FastAPI, Node.js with Express
+Database: PostgreSQL
+State Management: React Context API or Zustand
+Authentication: Clerk.com
+Deployment: Fly.io, Docker (Docker Compose for multi-service architecture)
+APIs: Orval with FastAPI for API interaction
+Background Job Processing: BullMQ (for offloading heavy tasks)
+Real-Time Updates: WebSockets (Socket.io)
+
+CHECK FOR DUPLCIATE FILES MAKE SURE TO STORE IN THE PROPER FOLDER PER THE HEIRARCHY
+
+## Overview
+The application is designed for industrial production facilities to track and optimize manufacturing efficiency. It allows users to log machine cycles, track bottlenecks, measure cycle times, and adjust production standards dynamically. The system will be built using Next.js, ShadCN, and React for the frontend, with a FastAPI layer and PostgreSQL database for the backend. Deployment will be handled via Fly.io using Docker and Docker Compose, with a mono repo structure to manage services. The app will leverage Orval for API interaction and implement cursor rules for both the frontend and backend.
+
+## Technology Stack
+- **Frontend**: Next.js, React, ShadCN (for UI components)
+- **Backend**: FastAPI, Node.js with Express
+- **Database**: PostgreSQL
+- **State Management**: React Context API or Zustand
+- **Authentication**: NextAuth.js
+- **Deployment**: Fly.io, Docker (Docker Compose for multi-service architecture)
+- **APIs**: Orval with FastAPI for API interaction
+- **Background Job Processing**: BullMQ (for offloading heavy tasks)
+- **Real-Time Updates**: WebSockets (Socket.io)
+
+## Core Functionalities
+
+### User Interface (UI)
+- **Main Dashboard**: Displays machine status, bottleneck operations, and key production metrics.
+- **Forms & Data Entry**: Log machine cycles and track part movements. Start/stop production runs.
+- **Settings & Configuration**: Modify cycle times, downtime reasons, and machine thresholds.
+
+### Backend API & Data Management
+- **Database Structure**: Includes tables for machines, parts, production logs, downtime logs, and user roles.
+- **API Endpoints**: CRUD operations for machines, parts, and logs, plus efficiency calculations.
+- **Real-Time Data Updates**: Utilizes WebSockets to emit updates when cycles are completed or downtime is logged.
+
+### Efficiency Calculation Logic
+- Tracks task completion times and compares them to standard times.
+- Identifies bottlenecks by comparing the longest cycle in a sequence.
+- Calculates efficiency metrics based on the formula: `(Standard Time - Actual Time) / Standard Time * 100`.
+
+### Role-Based Access Control (RBAC)
+- User roles (Admin, Supervisor, Operator) control feature access and permissions.
+- Protect API routes based on user roles, restricting certain actions like cycle adjustments to Admin/Supervisors.
+
+### Real-Time Data Updates with WebSockets
+- Real-time UI updates via Socket.io to reflect cycle completions, downtime logs, and efficiency recalculations.
+
+### Background Job Processing with BullMQ
+- Offload intensive efficiency calculations and updates to background workers, improving API response time and user experience.
+
+### Error Handling & Logging
+- **Backend Logging**: Use of Winston or Pino for error and system event logging.
+- **Frontend Error Handling**: React Error Boundaries and toast notifications for handling API failures.
+
+### Data Visualization & Reporting
+- **Graphs and Reports**: Use Recharts or Chart.js to visualize efficiency trends, cycle times, and downtime reports.
+- **Export Options**: Provide CSV/PDF exports for performance and downtime data.
+
+### Mobile & Tablet Responsiveness
+- Ensure the UI is touch-friendly and optimized for factory floor usage with larger buttons and easy-to-navigate forms.
+
+## Development Plan
+
+### Phase 1: Project Setup
+- Initialize Next.js project and install dependencies (ShadCN, React Query, Clerk.com auth, Express, pg, Socket.io, BullMQ).
+- Configure environment variables for DB, API keys, and secrets.
+
+### Phase 2: UI Development
+- Build dashboard, forms, modals, and settings using ShadCN UI components.
+- Implement responsive design for mobile and tablet.
+
+### Phase 3: Backend API Development
+- Design PostgreSQL database schema.
+- Implement API endpoints for production logs, downtime tracking, and efficiency metrics.
+
+### Phase 4: Efficiency Calculation & Bottleneck Detection
+- Implement logic for calculating efficiency and identifying bottlenecks based on cycle times.
+
+### Phase 5: Background Jobs for Processing
+- Use BullMQ to handle background processing of efficiency calculations.
+
+### Phase 6: Error Handling & Logging
+- Integrate error handling both on the backend (using Winston/Pino) and frontend (using React Error Boundaries).
+
+### Phase 7: Data Visualization & Reporting
+- Add graphs for visualizing production data and provide options to export reports.
+
+### Phase 8: Deployment & Optimization
+- Deploy frontend via Vercel and backend using Fly.io.
+- Optimize performance with caching and lazy loading.
+
+## Deployment & Infrastructure
+- **Docker & Docker Compose**: Dockerize the PostgreSQL and FastAPI services. Use Docker Compose for managing multi-service environments.
+- **Fly.io**: Deploy both the frontend (Next.js) and backend (FastAPI) services using Fly.io, utilizing Docker.
+- **Orval & Cursor Rules**: Use Orval for generating and managing API types, and implement cursor rules for managing pagination and state across the system.
+
+## Authentication Levels & User Access Control
+- **Company and Site**: These are locked during the sign-up process and define the user's parent-level access. Once set, the user will not be able to change them.
+- **Value Stream and Cell**: These can be adjusted by the user within the app, allowing flexibility in tracking efficiency at more granular levels.
+
+## Dashboard Design
+
+### Hierarchical Data Display:
+- **Efficiency Metrics**: Show the overall efficiency of the company and site, followed by more granular efficiency metrics for the value stream, cell, and individual operators.
+- **Levels Breakdown**: Allow users to drill down into each level, displaying efficiency data specific to:
+  - **Company**: Overall efficiency across the entire organization.
+  - **Site**: Efficiency metrics specific to a particular manufacturing site.
+  - **Value Stream**: Efficiency across different production stages (e.g., assembly, testing).
+  - **Cell**: Specific metrics for cells, which are smaller units of the production line.
+  - **Operator**: Efficiency data for individual operators, based on their logged cycles.
+
+### Role-based Access Control (RBAC):
+- **Admin/Supervisor**: Can access and modify data across all levels (Company, Site, Value Stream, Cell, Operator).
+- **Operator**: Can view efficiency data for the Value Stream, Cell, and Operator levels but cannot modify the higher-level (Company/Site) data.
+
+### Interactive Features:
+- **Changeable Value Stream and Cell**: Allow users to filter and adjust the current view by selecting a different value stream or cell from a dropdown or modal, depending on their role.
+- **Locked Company and Site**: Users should be shown these details but should not be able to modify them. Their login credentials should ensure they are assigned to the correct company and site.
+
+### Flow & Permissions:
+- **Sign-up**: During the sign-up process, the user's Company and Site are locked and cannot be changed later.
+- **Permissions**: The user can only access dashboards for the Value Stream, Cell, and Operator that they are assigned to, with the ability to switch between them as needed for efficiency tracking.
+
+## File Structure
+/apps
+  /frontend               # Next.js app
+  /backend                # FastAPI app
+
+/libs
+  /shared                 # Shared types, utilities, and components
+  /api                    # Shared API and schema management, including Orval setup
+  /database               # Shared PostgreSQL ORM setup (if using an ORM like SQLAlchemy or Tortoise ORM)
+
+/services
+  /worker                 # BullMQ job queue for background processing
+
+/.env                      # Environment variables for different environments
+
+
+
+
+
+

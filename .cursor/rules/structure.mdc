@@ -1,0 +1,74 @@
+---
+description: 
+globs: 
+---
+
+# Monorepo Architecture
+
+## File Structure
+/apps
+  /frontend               # Next.js app
+  /backend                # FastAPI app
+
+/libs
+  /shared                 # Shared types, utilities, and components
+  /api                    # Shared API and schema management, including Orval setup
+  /database               # Shared PostgreSQL ORM setup (if using an ORM like SQLAlchemy or Tortoise ORM)
+
+/services
+  /worker                 # BullMQ job queue for background processing
+
+/.env                      # Environment variables for different environments
+
+## Role-Based Access Control (RBAC)
+- **Authentication Levels:**
+  - `Company`
+  - `Site`
+  - `Value Stream`
+  - `Cell`
+  - `Operator`
+- Upon sign-up, users are **locked into** `Company` and `Site`.
+- Users can switch between `Value Stream` and `Cell`.
+
+## Cursor Rules File Implementation
+{
+  "rules": {
+    "company": {
+      "locked": true,
+      "editable": false
+    },
+    "site": {
+      "locked": true,
+      "editable": false
+    },
+    "valueStream": {
+      "locked": false,
+      "editable": true
+    },
+    "cell": {
+      "locked": false,
+      "editable": true
+    },
+    "operator": {
+      "locked": false,
+      "editable": false
+    }
+  }
+}
+
+## Deployment Strategy
+- **Frontend** deployed on Vercel
+- **Backend** on Fly.io with Dockerized services
+- **Database & FastAPI Layer** on Docker
+- **Docker Compose** to manage `PostgreSQL` and `FastAPI`
+
+## Dashboard Metrics
+- Displays **User Efficiency** & **Stream Efficiency**
+- Authentication-driven views:
+  - Company-wide metrics
+  - Site-level efficiency tracking
+  - Value Stream-specific data
+  - Cell performance breakdowns
+- Export/import functionality for reports
+
+
