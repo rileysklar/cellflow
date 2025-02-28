@@ -1,0 +1,193 @@
+---
+description: data
+globs: .tsx 
+---
+ # CellFlow Data Model
+
+## Hierarchical Structure
+
+### Company
+- id: UUID (PK)
+- name: String
+- created_at: Timestamp
+- updated_at: Timestamp
+
+### Site
+- id: UUID (PK)
+- company_id: UUID (FK)
+- name: String
+- location: String
+- created_at: Timestamp
+- updated_at: Timestamp
+
+### Value Stream
+- id: UUID (PK)
+- site_id: UUID (FK)
+- name: String
+- description: String
+- created_at: Timestamp
+- updated_at: Timestamp
+
+### Cell
+- id: UUID (PK)
+- value_stream_id: UUID (FK)
+- name: String
+- description: String
+- status: Enum ['active', 'inactive', 'maintenance']
+- created_at: Timestamp
+- updated_at: Timestamp
+
+### Machine
+- id: UUID (PK)
+- cell_id: UUID (FK)
+- name: String
+- description: String
+- status: Enum ['running', 'idle', 'down']
+- created_at: Timestamp
+- updated_at: Timestamp
+
+## Machine Settings
+- id: UUID (PK)
+- machine_id: UUID (FK)
+- target_cycle_time: Integer (seconds)
+- efficiency_threshold: Float (percentage)
+- downtime_threshold: Integer (minutes)
+- shift_duration: Integer (minutes)
+- alert_email_addresses: String[] (array of emails)
+- created_at: Timestamp
+- updated_at: Timestamp
+
+## Production Data
+
+### Machine Cycle
+- id: UUID (PK)
+- machine_id: UUID (FK)
+- operator_id: UUID (FK)
+- cycle_time: Integer (seconds)
+- parts_completed: Integer
+- operator_notes: String (optional)
+- created_at: Timestamp
+- efficiency_percentage: Float (calculated)
+
+### Downtime Event
+- id: UUID (PK)
+- machine_id: UUID (FK)
+- operator_id: UUID (FK)
+- downtime_type: Enum ['maintenance', 'breakdown', 'setup', 'material_shortage', 'other']
+- start_time: Timestamp
+- end_time: Timestamp
+- duration: Integer (calculated, minutes)
+- description: String
+- created_at: Timestamp
+
+## User Management
+
+### User
+- id: UUID (PK)
+- clerk_id: String (from Clerk.com)
+- email: String
+- name: String
+- role: Enum ['admin', 'supervisor', 'operator']
+- company_id: UUID (FK)
+- site_id: UUID (FK)
+- created_at: Timestamp
+- updated_at: Timestamp
+
+### User Assignment
+- id: UUID (PK)
+- user_id: UUID (FK)
+- value_stream_id: UUID (FK, optional)
+- cell_id: UUID (FK, optional)
+- role: Enum ['supervisor', 'operator']
+- created_at: Timestamp
+- updated_at: Timestamp
+
+## Performance Metrics
+
+### Efficiency Log
+- id: UUID (PK)
+- machine_id: UUID (FK)
+- timestamp: Timestamp
+- actual_cycle_time: Integer (seconds)
+- target_cycle_time: Integer (seconds)
+- efficiency_percentage: Float
+- parts_completed: Integer
+- downtime_minutes: Integer
+- created_at: Timestamp
+
+### Bottleneck Detection
+- id: UUID (PK)
+- value_stream_id: UUID (FK)
+- cell_id: UUID (FK)
+- machine_id: UUID (FK)
+- detection_time: Timestamp
+- cycle_time_impact: Integer (seconds)
+- efficiency_impact: Float
+- resolution_time: Timestamp (optional)
+- status: Enum ['active', 'resolved']
+- created_at: Timestamp
+
+## API Endpoints
+
+### Machine Cycles
+- POST /api/v1/cycles - Log new machine cycle
+- GET /api/v1/cycles - List cycles with filtering
+- GET /api/v1/cycles/{id} - Get specific cycle
+- GET /api/v1/machines/{id}/cycles - Get cycles for specific machine
+
+### Downtime
+- POST /api/v1/downtime - Log downtime event
+- GET /api/v1/downtime - List downtime events with filtering
+- GET /api/v1/downtime/{id} - Get specific downtime event
+- GET /api/v1/machines/{id}/downtime - Get downtime for specific machine
+
+### Machine Settings
+- POST /api/v1/machines/{id}/settings - Update machine settings
+- GET /api/v1/machines/{id}/settings - Get machine settings
+- PATCH /api/v1/machines/{id}/settings - Partially update settings
+
+### Efficiency
+- GET /api/v1/efficiency/company/{id} - Company-level metrics
+- GET /api/v1/efficiency/site/{id} - Site-level metrics
+- GET /api/v1/efficiency/value-stream/{id} - Value stream metrics
+- GET /api/v1/efficiency/cell/{id} - Cell-level metrics
+- GET /api/v1/efficiency/machine/{id} - Machine-level metrics
+
+### Bottlenecks
+- GET /api/v1/bottlenecks - List active bottlenecks
+- POST /api/v1/bottlenecks/{id}/resolve - Mark bottleneck as resolved
+
+### User Management
+- GET /api/v1/users/me - Get current user
+- GET /api/v1/users/{id}/assignments - Get user assignments
+- POST /api/v1/users/{id}/assignments - Create user assignment
+- DELETE /api/v1/users/{id}/assignments/{assignment_id} - Remove assignment
+
+## WebSocket Events
+
+### Real-time Updates
+- machine_cycle_completed: When a new cycle is logged
+- downtime_started: When machine goes down
+- downtime_ended: When machine comes back up
+- efficiency_updated: When efficiency metrics are recalculated
+- bottleneck_detected: When a new bottleneck is identified
+- settings_changed: When machine settings are updated
+
+## Background Jobs
+
+### Efficiency Calculations
+- Calculate real-time efficiency when new cycles are logged
+- Update historical efficiency metrics (hourly/daily/weekly)
+- Generate efficiency reports for email distribution
+
+### Bottleneck Detection
+- Analyze cycle times across value stream
+- Identify bottlenecks based on thresholds
+- Calculate impact on overall efficiency
+
+### Alert Processing
+- Process and send email alerts for:
+  - Efficiency below threshold
+  - Extended downtime
+  - Bottleneck detection
+  - Maintenance due

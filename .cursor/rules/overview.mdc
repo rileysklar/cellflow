@@ -1,6 +1,6 @@
 ---
-description: 
-globs: 
+description: overview
+globs: .tsx
 ---
 App Architecture: Manufacturing Efficiency Tracking System
 🔗App Demo on Loom 
