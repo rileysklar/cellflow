@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
-import { useProductionStore } from '@/services/productionService';
+import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
+import { useProductionStore, type ValueStream, type Cell } from '@/services/productionService';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select } from '@/components/ui/select';
@@ -40,6 +40,9 @@ const formatDateTimeLocal = (date: Date) => {
 
 export default function ProductionForm() {
   const { user } = useUser();
+  
+  const store = useProductionStore();
+  const formData = store.formData || { ...initialFormData, timestamp: formatDateTimeLocal(new Date()) };
   const { 
     addProductionCycle, 
     isLoading,
@@ -47,46 +50,68 @@ export default function ProductionForm() {
     cells,
     fetchValueStreams,
     fetchCellsByValueStream,
-    getCell
-  } = useProductionStore();
-  const [formData, setFormData] = useState<FormData>(initialFormData);
+    getCell,
+    setFormData,
+  } = store;
+
+  const resetForm = useCallback(() => 
+    setFormData({ ...initialFormData, timestamp: formatDateTimeLocal(new Date()) }),
+    [setFormData]
+  );
+
+  // Use useRef to track if initial fetch has been done
+  const initialFetchDone = useRef(false);
 
   // Fetch value streams only once on mount
   useEffect(() => {
-    console.log('Initial value streams fetch');
-    fetchValueStreams();
+    if (!initialFetchDone.current) {
+      fetchValueStreams();
+      initialFetchDone.current = true;
+    }
   }, [fetchValueStreams]);
 
-  // Simplified value stream selection
-  const selectValueStream = async (valueStreamId: string) => {
-    console.log('Selecting value stream:', valueStreamId);
-    
-    // Update form data
-    setFormData(prev => ({
-      ...prev,
+  // Memoize selectValueStream to prevent recreating on every render
+  const selectValueStream = useCallback(async (valueStreamId: string) => {
+    setFormData({
+      ...formData,
       value_stream_id: valueStreamId,
       cell_id: ''
-    }));
-
-    // Fetch cells
-    await fetchCellsByValueStream(valueStreamId);
-  };
-
-  // Single debug log for state changes
-  useEffect(() => {
-    console.log('Form state updated:', {
-      valueStreams: valueStreams.map(vs => ({ id: vs.id, name: vs.name })),
-      cells: cells.map(cell => ({ id: cell.id, name: cell.name })),
-      formData,
-      isLoading
     });
-  }, [valueStreams, cells, formData, isLoading]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+    await fetchCellsByValueStream(valueStreamId);
+  }, [fetchCellsByValueStream, formData, setFormData]);
+
+  // Memoize handleChange to prevent recreating on every render
+  const handleChange = useCallback((
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
+    if (name === 'value_stream_id' || name === 'cell_id') {
+      return; // These are handled by their own handlers
+    }
+    
+    setFormData({
+      ...formData,
+      [name]: ['actual_cycle_time', 'duration_minutes'].includes(name) 
+        ? Number(value) 
+        : value
+    });
+  }, [formData, setFormData]);
+
+  // Memoize setCurrentTime
+  const setCurrentTime = useCallback(() => {
+    setFormData({
+      ...formData,
+      timestamp: formatDateTimeLocal(new Date())
+    });
+  }, [formData, setFormData]);
+
+  // Memoize handleSubmit
+  const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!user?.id) {
-      console.log('No user ID found');
+      console.error('No user ID found');
       return;
     }
 
@@ -112,72 +137,53 @@ export default function ProductionForm() {
     const startTime = new Date(formData.timestamp);
     const endTime = new Date(startTime.getTime() + formData.duration_minutes * 60000);
 
-    console.log('Submitting production data:', {
-      ...formData,
-      operator_id: user.id,
-      cell_target_time: selectedCell.target_cycle_time,
-      start_time: startTime,
-      end_time: endTime
-    });
-
     const productionData = {
       cell_id: formData.cell_id,
       operator_id: user.id,
       start_time: startTime,
       end_time: endTime,
       actual_cycle_time: formData.actual_cycle_time,
+      target_cycle_time: selectedCell.target_cycle_time,
       status: formData.status,
       notes: formData.notes,
-      efficiency: calculateEfficiency(selectedCell.target_cycle_time, formData.actual_cycle_time),
+      efficiency: calculateEfficiency(selectedCell.target_cycle_time, formData.actual_cycle_time)
     };
 
-    await addProductionCycle(productionData);
-    setFormData(initialFormData);
-  };
-
-  // Add detailed form state logging
-  const logFormState = (label: string, data: any) => {
-    console.log(`[${label}] Form State:`, {
-      timestamp: new Date().toISOString(),
-      data,
-      valueStreams: valueStreams.map(vs => ({ id: vs.id, name: vs.name })),
-      cells: cells.map(cell => ({ id: cell.id, name: cell.name }))
-    });
-  };
-
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
-    const { name, value } = e.target;
-    if (name === 'value_stream_id' || name === 'cell_id') {
-      return; // These are handled by their own handlers
+    try {
+      await addProductionCycle(productionData);
+      resetForm();
+    } catch (error) {
+      console.error('Error submitting production cycle:', error);
     }
-    
-    console.log('Form change:', { name, value });
-    setFormData(prev => ({
-      ...prev,
-      [name]: ['actual_cycle_time', 'duration_minutes'].includes(name) 
-        ? Number(value) 
-        : value
-    }));
-  };
+  }, [user, formData, getCell, addProductionCycle, resetForm]);
 
-  const setCurrentTime = () => {
-    setFormData(prev => ({
-      ...prev,
-      timestamp: formatDateTimeLocal(new Date())
-    }));
-  };
+  const selectedCell = useMemo(() => getCell(formData.cell_id), [formData.cell_id, getCell]);
 
-  const selectedCell = getCell(formData.cell_id);
+  const handleValueStreamChange = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
+    const valueStreamId = e.target.value;
+    selectValueStream(valueStreamId);
+  }, [selectValueStream]);
 
-  // Add debug logging for render state
-  console.log('Form render state:', {
-    valueStreams: valueStreams.map(vs => ({ id: vs.id, name: vs.name })),
-    cells: cells.map(cell => ({ id: cell.id, name: cell.name })),
-    formData,
-    isLoading
-  });
+  const handleCellChange = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
+    const cellId = e.target.value;
+    setFormData({
+      ...formData,
+      cell_id: cellId
+    });
+  }, [formData, setFormData]);
+
+  // Remove excessive logging that causes re-renders
+  // Only log important state changes
+  useEffect(() => {
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Form state updated:', {
+        valueStreams: valueStreams.length,
+        cells: cells.length,
+        selectedValueStream: formData.value_stream_id,
+        selectedCell: formData.cell_id
+      });
+    }
+  }, [valueStreams.length, cells.length, formData.value_stream_id, formData.cell_id]);
 
   return (
     <Card>
@@ -186,88 +192,43 @@ export default function ProductionForm() {
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Value Stream Selection */}
+          {/* Value Stream and Cell Selection */}
           <div className="flex flex-col md:flex-row gap-4">
             <div className="flex-1 space-y-2">
-              <label className="text-sm font-medium text-gray-700">
-                Value Stream Selection
+              <label htmlFor="value_stream_id" className="text-sm font-medium text-gray-700">
+                Value Stream
               </label>
-              <div className="grid grid-cols-2 gap-2">
-                {valueStreams.map(vs => (
-                  <div
-                    key={vs.id}
-                    role="button"
-                    tabIndex={0}
-                    onClick={() => {
-                      console.log('Value stream div clicked:', vs.id);
-                      selectValueStream(vs.id);
-                    }}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' || e.key === ' ') {
-                        selectValueStream(vs.id);
-                      }
-                    }}
-                    className={`w-full p-2 text-sm rounded-md transition-colors cursor-pointer
-                      ${formData.value_stream_id === vs.id 
-                        ? 'bg-blue-500 text-white hover:bg-blue-600' 
-                        : 'bg-white border border-gray-300 hover:bg-gray-50'
-                      }`}
-                  >
-                    {vs.name}
-                  </div>
+              <select
+                id="value_stream_id"
+                name="value_stream_id"
+                value={formData.value_stream_id}
+                onChange={handleValueStreamChange}
+                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                <option value="">Select Value Stream</option>
+                {valueStreams.map((vs: ValueStream) => (
+                  <option key={vs.id} value={vs.id}>{vs.name}</option>
                 ))}
-              </div>
-              <div className="text-xs text-gray-500 mt-1">
-                Selected: {valueStreams.find(vs => vs.id === formData.value_stream_id)?.name || 'None'}
-              </div>
-              <div className="text-xs text-blue-500 mt-1">
-                Available Value Streams: {valueStreams.length}
-              </div>
+              </select>
             </div>
 
-            {/* Cell Selection */}
             <div className="flex-1 space-y-2">
-              <label className="text-sm font-medium text-gray-700">
-                Cell Selection
+              <label htmlFor="cell_id" className="text-sm font-medium text-gray-700">
+                Cell
               </label>
-              <div className="grid grid-cols-2 gap-2">
-                {cells.map(cell => (
-                  <div
-                    key={cell.id}
-                    role="button"
-                    tabIndex={0}
-                    onClick={() => {
-                      console.log('Cell div clicked:', cell.id);
-                      setFormData(prev => ({
-                        ...prev,
-                        cell_id: cell.id
-                      }));
-                    }}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' || e.key === ' ') {
-                        setFormData(prev => ({
-                          ...prev,
-                          cell_id: cell.id
-                        }));
-                      }
-                    }}
-                    className={`w-full p-2 text-sm rounded-md transition-colors cursor-pointer
-                      ${!formData.value_stream_id && 'opacity-50 cursor-not-allowed'}
-                      ${formData.cell_id === cell.id 
-                        ? 'bg-blue-500 text-white hover:bg-blue-600' 
-                        : 'bg-white border border-gray-300 hover:bg-gray-50'
-                      }`}
-                  >
-                    {cell.name}
-                  </div>
+              <select
+                id="cell_id"
+                name="cell_id"
+                value={formData.cell_id}
+                onChange={handleCellChange}
+                disabled={!formData.value_stream_id}
+                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                <option value="">Select Cell</option>
+                {cells.map((cell: Cell) => (
+                  <option key={cell.id} value={cell.id}>{cell.name}</option>
                 ))}
-              </div>
-              <div className="text-xs text-gray-500 mt-1">
-                Selected: {cells.find(cell => cell.id === formData.cell_id)?.name || 'None'}
-              </div>
-              {cells.length === 0 && formData.value_stream_id && (
-                <div className="text-xs text-yellow-500">Loading cells...</div>
-              )}
+              </select>
             </div>
           </div>
 
@@ -341,17 +302,16 @@ export default function ProductionForm() {
               <label htmlFor="status" className="text-sm font-medium text-gray-700">
                 Status
               </label>
-              <select
+              <Select
                 id="status"
                 name="status"
                 value={formData.status}
                 onChange={handleChange}
-                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 <option value="completed">Completed</option>
                 <option value="interrupted">Interrupted</option>
                 <option value="error">Error</option>
-              </select>
+              </Select>
             </div>
           </div>
 

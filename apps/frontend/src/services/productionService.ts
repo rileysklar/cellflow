@@ -1,6 +1,8 @@
 import { create } from 'zustand';
 import { StateCreator } from 'zustand';
 import { persist, createJSONStorage, PersistOptions } from 'zustand/middleware';
+import { ApiService } from './base/ApiService';
+import { ApiResponse } from './types';
 
 // Types based on our data model
 export interface Cell {
@@ -27,6 +29,7 @@ export interface ProductionCycle {
   start_time: Date;
   end_time: Date;
   actual_cycle_time: number;
+  target_cycle_time: number;
   efficiency: number;
   status: 'completed' | 'interrupted' | 'error';
   notes: string;
@@ -50,6 +53,17 @@ export interface EfficiencyMetric {
   efficiency: number;
   cycle_time: number;
   bottleneck_status: boolean;
+  created_at: Date;
+}
+
+interface FormData {
+  timestamp: string;
+  duration_minutes: number;
+  actual_cycle_time: number;
+  status: 'completed' | 'interrupted' | 'error';
+  notes: string;
+  value_stream_id: string;
+  cell_id: string;
 }
 
 interface ProductionState {
@@ -60,6 +74,7 @@ interface ProductionState {
   cells: Cell[];
   isLoading: boolean;
   error: string | null;
+  formData: FormData | null;
   
   // Actions
   addProductionCycle: (cycle: Omit<ProductionCycle, 'id'>) => Promise<void>;
@@ -69,6 +84,7 @@ interface ProductionState {
   fetchValueStreams: () => Promise<void>;
   fetchCellsByValueStream: (valueStreamId: string) => Promise<void>;
   getCell: (cellId: string) => Cell | undefined;
+  setFormData: (data: FormData) => void;
 }
 
 // Calculate efficiency based on standard and actual cycle times
@@ -95,6 +111,11 @@ export const useProductionStore = create<ProductionState>()(
       cells: [],
       isLoading: false,
       error: null,
+      formData: null,
+
+      setFormData: (data: FormData) => {
+        set({ formData: data });
+      },
 
       addProductionCycle: async (cycle: Omit<ProductionCycle, 'id'>) => {
         try {
@@ -249,4 +270,56 @@ export const useProductionStore = create<ProductionState>()(
       })
     } as PersistOptions<ProductionState, PersistedState>
   )
-); 
+);
+
+export class ProductionService extends ApiService {
+  // Value Streams
+  async getValueStreams(): Promise<ApiResponse<ValueStream[]>> {
+    return this.get<ValueStream[]>('/value-streams');
+  }
+
+  // Cells
+  async getCells(valueStreamId: string): Promise<ApiResponse<Cell[]>> {
+    return this.get<Cell[]>(`/value-streams/${valueStreamId}/cells`);
+  }
+
+  async getCell(cellId: string): Promise<ApiResponse<Cell>> {
+    return this.get<Cell>(`/cells/${cellId}`);
+  }
+
+  // Production Cycles
+  async getProductionCycles(cellId: string): Promise<ApiResponse<ProductionCycle[]>> {
+    return this.get<ProductionCycle[]>(`/cells/${cellId}/production-cycles`);
+  }
+
+  async createProductionCycle(data: Omit<ProductionCycle, 'id'>): Promise<ApiResponse<ProductionCycle>> {
+    return this.post<ProductionCycle>('/production-cycles', data);
+  }
+
+  // Downtimes
+  async getDowntimes(cellId: string): Promise<ApiResponse<Downtime[]>> {
+    return this.get<Downtime[]>(`/cells/${cellId}/downtimes`);
+  }
+
+  async createDowntime(data: Omit<Downtime, 'id'>): Promise<ApiResponse<Downtime>> {
+    return this.post<Downtime>('/downtimes', data);
+  }
+
+  // Efficiency Metrics
+  async getEfficiencyMetrics(
+    entityType: EfficiencyMetric['entity_type'],
+    entityId: string
+  ): Promise<ApiResponse<EfficiencyMetric[]>> {
+    return this.get<EfficiencyMetric[]>(`/efficiency-metrics/${entityType}/${entityId}`);
+  }
+
+  async calculateEfficiency(
+    entityType: EfficiencyMetric['entity_type'],
+    entityId: string
+  ): Promise<ApiResponse<EfficiencyMetric>> {
+    return this.post<EfficiencyMetric>(`/efficiency-metrics/calculate`, {
+      entity_type: entityType,
+      entity_id: entityId
+    });
+  }
+} 
