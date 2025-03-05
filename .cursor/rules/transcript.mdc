@@ -1,0 +1,102 @@
+---
+description: transcript
+globs: .tsx
+---
+00:00 Let's go ahead and close out of this. And we'll open up a fresh attainment form.
+00:12 Alright, so every time you open this thing, this is just an access database that has a couple of different features.
+00:23 And one of them is the, it's got one table, which is the data. Which is where, when you add parts, this is where it's going to fall into.
+00:32 And in this particular form, there's four different- different machines. And you can set that up. Umm, right now we're just going to go through the four different machines in the cycle times that are related to them.
+00:44 So this is just a background data form. And then there's three different forms. I guess that's a data table in three different forms.
+00:51 So the main form is going to be form three. So this is what the user's going to be using when they start the day.
+00:58 And the very first- members. The first they do when they start the day, they load the line. So imagine that you have four different machines in the cell.
+01:05 And you have parts in each of those machines. So when you come in and you're like, alright, let me go ahead and grab.
+01:11 Umm, this part's going to be in the turn two machine. This part's going to be in the turn three machine.
+01:18 And this part's going to be in the turn four machine. Or just, we'll just call this machine one, machine two, machine three and machine four.
+01:25 And then over here, it's going to show where your, uh, bottleneck operation is. So that being said, um, when this part moves from one operation to the next operation, it's going to go down to this spot, so on and so forth.
+01:42 It's a sequencing thing. So let's go ahead and say, hey, these are three parts we got in the system. And, so it populated with times. And then we're going to go ahead and start, uh, loading what we're going to run for the day.
+01:57 So, before we do all that, it's good to go ahead and say, hey, we're starting our day. So we press start.
+02:04 So it's 147 right now. And then to- the day's date is 217. And so then we're going to go ahead and start loading our day.
+02:14 And we're just going to say, tester pieces. You know what? Let's go ahead and just do a bunch of tester testers.
+02:23 And we're going to do just one of those at a time. So this is what our quantity is going to be.
+02:29 That we're going to run every time we finish apart. We're going to go ahead and press complete. But we're going to want to build the days worth of work or a significant amount of time.
+02:40 Umm, so if I go ahead and press complete. So it's 147 standard work time is 15 minutes for TPM. That's just the very first thing you do every day.
+02:52 So you're going to do your. TPM checks, make sure all the machines are good to go. And so once you press complete, it's going to go ahead and do a timestamp.
+03:00 So it's saying, Hey, you finished that at 148. We started the day at 147. It actually took us one minute to do that.
+03:10 And so we were better by 14 minutes, which our calculation over here disregards us being better than standard. What we're really utilizing this for is.
+03:22 To, uh, find out where we're, where our problems are. So it really wants to understand where our added time is, why we didn't meet standard, which.
+03:33 That brings me to my next point of let's say. These parts that are in the system. If we're saying we're beating this time significantly, what I'm going to do is I'm going to say, Hey, we need a new standard.
+03:46 So what I'm going to do is go up to this button right here that says new edit parts. I'm just going to pull up.
+03:51 Test or test. tester we're saying it takes 10 minutes and we just did a analysis. You know what? It's actually only taking one minute now for each of these operations.
+04:01 Let's go ahead and just update this. And go ahead and close out of that. That's going to automatically, when I close out of that, that's going to change these values over here to equal this one minute.
+04:13 So, obviously not all of them went to one minute because the bottleneck in the system was actually four minutes for this very first part.
+04:26 So it's saying we're not going to be able to advance this part until we finish the longest part in the cycle.
+04:33 So if I wanted to, and whatever we loaded the cell with, we could, you know, audit that to see what, But time that is.
+04:40 So let's go ahead and click complete. We finish our next one. Just sex out of this. I don't know what that is.
+04:48 But, um, we finished that one. And then we're going to keep going on and so on and so forth. So if I wanted to add a new part, let's just call it, new part, um, We're going call it, new part one.
+05:08 New part one. And we're going to call this cycle as well. We're just going to call them one minute. We're going to enter that.
+05:22 So now, we've got a new part. We're going to go ahead and run, uh, new part one as well. We're going to go ahead and build the day out a little bit more.
+05:37 And so once we complete our next one, we'll go ahead and press complete. And we're still at 100% because we're neglecting the added time here.
+05:47 Or us being better. Then standard. So, if we wanted to go in and make these all different, we could go in and say, let's edit some parts.
+05:55 Uh, test long. I'm going to go ahead and change these to one. We did an analysis and now these are actually all one minute.
+06:05 And that's, We can change these times. And then, let's go ahead and edit these other ones as well. Uh, tester, tester.
+06:14 We already edited that one. Test part. Let's go ahead and make these one as well. Just for simplicity reasons. So, Now we're finishing standard work on time here.
+06:27 So it's zero, zero. Um, another feature that's in here would be, um, launches and breaks. So if I wanted to put a launch in here, we could.
+06:39 Um, we can also plug in, you know, different downtime reasons. Another cool feature is, um, that's funny. Waitin' gone tooling.
+06:52 So I'm pretty sure I can fix that by form info. Waiting on tooling. So if I go down here, these are just, you can populate this for the first time on your most common, um, downtime reasons, but it's.
+07:09 It also allows you to free type. So waiting on tooling now is spelled correctly. So you could also free type.
+07:22 So, um, animating. And then, let's go ahead and complete this next part. And, I'm curious. Since we were over, um, we'll have to look at this.
+07:48 Cause, I don't know if it's rounding up too on. Or what, so, let's just change this to 3. And see what happens.
+08:00 Maybe more. Maybe it is taking into consideration here. These short cycles. That was my first round I might be throwing it off.
+08:14 So loss mitts is 57. Oh, let's go ahead and make these zero. I don't know if that says anything to do with it.
+08:23 Ah, there we go. If I take those lunches and breaks out, that should just correlate. Um, so that's going in the total loss minutes and breaks.
+08:33 So that's why I was giving it. 100 is saying, it's taking your total minutes here and adding that into the calculation.
+08:42 So this column is your, um, you know, what you're better than standard or what you've missed standard by. So, if you, uhm, missed standard, then it's gonna go total up here, and you have your total breaks, and then you have your total minute, lost minutes, and your breaks, and that'll be what your lost
+09:03 total is. And then it's just gonna take a, uh, lost percentage based on how much time you've lost, and how much time has elapsed in the day.
+09:14 So if you could imagine, we lost the- three minutes so far, we've been here for, you know, eight minutes, not even.
+09:21 Umm, so I could probably now press complete, and that might be a real time stamp. And, so that's where we're at right now.
+09:33 So we're at 57% because we missed our standard, but if we actually finished it out, um, 53, this would be our live percent attainment.
+09:44 So we were at 33% loss, 67% for the day. So really this is a time stamp, you know, problem log that we're trying to build.
+09:54 So we can walk by the cell, see what they've run, what they're going to run, what issues. They had and what downtime issues they had with those and seeing if we've got them addressed or not.
+10:06 Um, the next feature I wanted to show was the first part. So if it was a first part and they're set up on the machine, we could go ahead and click this button.
+10:16 When I click this button, it's going to add 10 minutes to the bottleneck operation because we're going to, we're 10 minutes because that's what we put up here.
+10:24 Each one we have 10 minutes for. We can. We can them to whatever we want. But once we click this, it's going to add 10 minutes to that first piece all the way through.
+10:36 Now if I change this, did you see how right here it's 11, 11, 11, 11. But if there's no set up on a certain machine, I'll just make that zero.
+10:46 Make that zero. Make that zero. And then that will continue to update right here. So if we only have set up on our first operation, it would add it to this, this number right here.
+10:57 And if I just go ahead and take that off, we're back to where we were. Make sense? Alright, so. Now here's another really cool thing.
+11:11 Uh, when I press save screen, that's going to go ahead and. and save the screen. I'm not sure what happened here.
+11:22 But, uhm, let me see if it's saved. Oh, sorry. Get out of here. Uh, oh. Thank you. Oh, shit.
+11:44 I guarantee you it has something to do with my form desktop. Save screen. User. Desktop.
+11:59 By our tool. Okay. Uhm, looks like we're back in action, but I don't. Uhm, think. Well. Bottom line is, when you click Save Screen, based on my form info, Save Screen should be saved in this location, uh, when you set up the form for the first time.
+12:51 And I don't think it did save it. And then also, here's another, Another thing that saves as well. Every time you press Complete, it should be, uh, saved.
+13:00 And then, I'll show you what happens, or what should happen at least. And you can also change what the machines are that are displayed.
+13:08 Um, I'll show you back over here. So these are the machines. Turn one, turn two, gear and mill. On the form info, turn one, turn two, gear and mill.
+13:19 So this is the setup sheet. The form info. What's the cell name? What are them operations? What is good? Greater than 60 is considered green.
+13:32 Greater than 50 is considered, Okay. These are the standard, uh, downtime issues which we can change. You know, all this is a, a, a, manipulatable.
+13:43 Uh, and also where everything is saved at. So if I go ahead and, let's press complete one more time, So now we're down to 45 minutes, uhh, or 45% attainment for the day. Because we've completed, you know, X amount of work with, uh, X amount of downtime.
+14:05 Six minutes of downtime out of, you know, working for this amount of time. Eleven minutes. So, Let me close this.
+14:19 Let me go ahead and close this out. So did you notice that our table automatically updated once we did the edit part?
+14:30 So if I close this out. And re-open it. Previous saves.
+14:47 This window pops up. We selected date. And I have no idea what's going on here. What the date. Let me see.
+14:58 It only likes to state for some reason. So that's not. So that, that feature is probably not working right now.
+15:04 And then when they were clicked last. So, but that would be a feature where we'd want to pull up our previous save.
+15:12 So this is just the one on my desktop. We probably need to reset the form up to make sure it's all- I'll save it correctly.
+15:19 So if I wanted to reset up the form and come here, I want to make sure let's clear this. I want the excel.
+15:28 Save here. And then I want save screens to save here. And I also want to go ahead and change this to 75. Or let's call it 90. And then 75. That looks good.
+16:12 Cool. So that's saved. Form- 3. That should have jived with our, our 90 and 75 loading the cell. Boom. Actually, I think I was- I was to click I think that a two.
+16:53 It does have to lapse for more than a minute. Or, it's gotta change time for it to actually read data.
+17:03 So, uhh, we've got the line loaded, uhh. And we've got our setup times. And let's see, when I press complete for real, here in just a second, when it hits 203, umm, let me see if that save screen worked.
+17:19 Let me also change this real quick. I'm gonna call this uhh, tester. So the cell is tester.
+17:38 And we also have a couple other features in here. They don't really do anything except show that we scrapped apart and remade it. It doesn't have anything to do with calculations.
+17:49 And down here is a summation of all the standard work time. So really, we usually have about 480 minutes in a day.
+18:01 And so we want to build a day with that much. And then here's our available, available for our, uh. Actual minutes so far.
+18:10 So complete. So since I clicked complete. And I'm gonna go ahead and do save screen.
+18:20 Let's see if that looks like it did save us a screen. So now it saved a screenshot of what happened so far.
+18:28 That is one of the, it just drops it into that save. But the most important feature of this is just, how are we doing right now?
+18:43 And that's what, you know, our management team loves to see is like, okay, we walked by. Hey, we're green, we're red.
+18:49 What's the problem? Do we know what's going on for the day? You know, like, did we crash? Or, we had to make some jaws, we crashed the machine.
+18:59 You know, what happened? Like, we need to set that, set that standard. That finger. You know, we're documenting this, and then, you know, making, trying to.
+19:23 If don't mind. make some change to make it better. So. And just for, you know, building this out purposes, you really want to only click complete when the part is done and when the time is passed.
+19:37 But, for the sake of this, you know. You can manually go in and change stuff. Obviously, I don't think it's Good Thanks when we're going in reverse time right here.
+19:57 There we go. So. That's pretty much the gist of it. It's very simple. Uh, so we've got the save screen.
+20:16 We've got just a couple of buttons to say how we're doing where we're at. And logging the, information. Alright. Let me see if I can pause this.
+20:30 I'm take

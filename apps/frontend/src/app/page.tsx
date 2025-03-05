@@ -9,7 +9,7 @@ export default async function Home() {
   if (userId) {
     redirect("/dashboard");
   }
- 
+
   return (
     <div className="flex min-h-screen flex-col items-center justify-center p-24">
       <h1 className="mb-6 text-4xl font-bold">Manufacturing Efficiency Tracking System</h1>

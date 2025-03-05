@@ -1,8 +1,4 @@
 ---
-description: data
-globs: .tsx
----
- ---
 description: Data model schema for Manufacturing Efficiency Tracking System
 globs: ["apps/backend/models/*.py", "libs/database/**/*.ts"]
 ---
@@ -160,4 +156,4 @@ globs: ["apps/backend/models/*.py", "libs/database/**/*.ts"]
   1. Efficiency calculations
   2. Bottleneck analysis
   3. Report generation
-  4. Historical data aggregation
+  4. Historical data aggregation 
