@@ -25,40 +25,40 @@ interface FeatureProps {
 
 const features: FeatureProps[] = [
   {
-    title: "Cursor IDE Optimized",
+    title: "AI-First Development",
     description:
-      "Built specifically for easy AI-assisted development with the Cursor editor.",
+      "Optimized for AI pair programming with Cursor, including built-in guidelines for AI tools to understand the codebase.",
     icon: Terminal
   },
   {
-    title: "Next.js Framework",
+    title: "Production Ready",
     description:
-      "Leverages the power of Next.js App Router, server components, and client components.",
-    icon: LayoutGrid
+      "Enterprise-grade architecture with scalable patterns, built for deployment on Vercel with full environment setup.",
+    icon: Server
+  },
+  {
+    title: "Secure Authentication",
+    description:
+      "Complete multi-tenant user management with Clerk, protected routes, and role-based access control.",
+    icon: ShieldCheck
   },
   {
     title: "Type-Safe Database",
     description:
-      "Supabase Postgres with Drizzle ORM for complete type safety from database to UI.",
+      "Strongly typed database operations with Drizzle ORM and PostgreSQL on Supabase for reliable data handling.",
     icon: Database
   },
   {
-    title: "Authentication Ready",
+    title: "Modern UI Components",
     description:
-      "Clerk authentication with social login support and ready-to-use components.",
-    icon: ShieldCheck
-  },
-  {
-    title: "UI Component Library",
-    description:
-      "Shadcn components, Tailwind CSS styling, and responsive design patterns.",
+      "Beautiful, responsive interfaces with Tailwind, Shadcn/ui, and Framer Motion animations.",
     icon: Paintbrush
   },
   {
-    title: "Performance Focused",
+    title: "Server Components",
     description:
-      "Optimized for Core Web Vitals with server components and efficient rendering.",
-    icon: Zap
+      "Next.js App Router with React Server Components for optimal performance and data loading patterns.",
+    icon: LayoutGrid
   }
 ]
 
@@ -84,7 +84,7 @@ export const FeaturesSection = () => {
   }, [])
 
   return (
-    <div className="container mx-auto -mt-8 px-4 py-8">
+    <div className="container mx-auto px-4 pt-0 pb-8">
       {!mounted ? (
         // Placeholder while loading
         <>
@@ -115,11 +115,10 @@ export const FeaturesSection = () => {
                 "mb-4 text-balance text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl"
               )}
             >
-              Built for Modern Development
+              Enterprise-Grade Features
             </h2>
             <p className="text-muted-foreground mx-auto max-w-[800px] text-balance md:text-xl">
-              A comprehensive stack that includes everything you need to build
-              your next project quickly. Just clone, customize, and deploy.
+              A comprehensive stack designed for rapid development with AI tools. Includes authentication, database integration, and beautiful UI components.
             </p>
           </motion.div>
 

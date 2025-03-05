@@ -20,8 +20,6 @@ interface NavLink {
 
 const navLinks: NavLink[] = []
 
-const signedInLinks = [{ href: "/contacts", label: "Contacts" }]
-
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
@@ -64,22 +62,22 @@ export default function Header() {
               {link.label}
             </Link>
           ))}
-
-          <SignedIn>
-            {signedInLinks.map(link => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="rounded-full px-3 py-1 hover:opacity-80"
-              >
-                {link.label}
-              </Link>
-            ))}
-          </SignedIn>
         </nav>
 
         <div className="flex items-center space-x-4">
-          <ThemeSwitcher />
+          {/* Display these on desktop only */}
+          <div className="hidden md:flex md:items-center md:space-x-4">
+            <ThemeSwitcher />
+
+            <SignedIn>
+              <Link href="/contacts">
+                <Button className="gap-2">
+                  <Rocket className="size-4" />
+                  Go to App
+                </Button>
+              </Link>
+            </SignedIn>
+          </div>
 
           <SignedOut>
             <SignInButton>
@@ -113,42 +111,23 @@ export default function Header() {
       </div>
 
       {isMenuOpen && (
-        <nav className="bg-primary-foreground text-primary p-4 md:hidden">
-          <ul className="space-y-2">
-            <li>
-              <Link
-                href="/"
-                className="block hover:underline"
-                onClick={toggleMenu}
-              >
-                Home
-              </Link>
-            </li>
-            {navLinks.map(link => (
-              <li key={link.href}>
-                <Link
-                  href={link.href}
-                  className="block hover:underline"
+        <nav className="bg-background border-b p-4 md:hidden">
+          <div className="space-y-4">
+            <SignedIn>
+              <div>
+                <Link 
+                  href="/contacts"
+                  className="block py-2 text-sm font-medium text-foreground/80 hover:text-foreground"
                   onClick={toggleMenu}
                 >
-                  {link.label}
+                  Go to App
                 </Link>
-              </li>
-            ))}
-            <SignedIn>
-              {signedInLinks.map(link => (
-                <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    className="block hover:underline"
-                    onClick={toggleMenu}
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
+              </div>
             </SignedIn>
-          </ul>
+            <div>
+              <ThemeSwitcher />
+            </div>
+          </div>
         </nav>
       )}
     </header>

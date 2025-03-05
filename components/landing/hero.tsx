@@ -17,7 +17,7 @@ export const HeroSection = () => {
   }, [])
 
   return (
-    <div className="mb-0 flex min-h-[30vh] flex-col items-center justify-start px-4 pt-12 md:pt-16">
+    <div className="mb-6 flex min-h-[30vh] flex-col items-center justify-start px-4 pt-12 md:mb-8 md:pt-16">
       {!mounted ? (
         // Placeholder while loading - updated to match actual content
         <>
@@ -75,8 +75,8 @@ export const HeroSection = () => {
             transition={{ duration: 0.5, delay: 0.2 }}
             className="text-muted-foreground mb-4 max-w-[700px] text-balance text-center md:text-xl"
           >
-            A full-stack template optimized for Cursor IDE with Next.js,
-            Tailwind, Clerk, Supabase, and Drizzle ORM for rapid development.
+            A production-ready full-stack web application template optimized for AI-assisted development 
+            with Next.js, Tailwind, Clerk Auth, Supabase, and Drizzle ORM.
           </motion.p>
 
           <motion.div
@@ -92,15 +92,15 @@ export const HeroSection = () => {
               </Link>
             </Button>
 
-            <Button asChild variant="outline" size="lg">
+            <Button asChild variant="outline" size="lg" className="group">
               <Link
                 href="https://materializelabs.com"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center"
               >
-                <Code className="mr-2 size-4" />
-                Materialize Labs
+                By Materialize Labs{" "}
+                <ArrowRight className="ml-2 size-4 transition-transform group-hover:translate-x-1" />
               </Link>
             </Button>
           </motion.div>

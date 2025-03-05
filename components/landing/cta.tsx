@@ -43,7 +43,7 @@ export const CTASection = () => {
               "mb-6 text-balance text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl"
             )}
           >
-            <AnimatedGradientText>Start Building Today</AnimatedGradientText>
+            <AnimatedGradientText>Ready for Production</AnimatedGradientText>
           </motion.h2>
 
           <motion.p
@@ -52,8 +52,7 @@ export const CTASection = () => {
             transition={{ duration: 0.5, delay: 0.2 }}
             className="text-muted-foreground mb-8 max-w-[700px] text-balance md:text-xl"
           >
-            Clone our GitHub repository and start building your application with
-            a complete, production-ready stack.
+            Get started with a complete stack including authentication, database, server actions, and deployment configuration. Includes a working contacts feature as a template for your own functionality.
           </motion.p>
 
           <motion.div
