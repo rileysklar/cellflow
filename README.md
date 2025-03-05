@@ -26,7 +26,7 @@ CellFlow is a modern web application designed to track and optimize manufacturin
 ### Backend
 - FastAPI
 - PostgreSQL
-- SQLAlchemy
+- SQLAlchemya
 - Pydantic
 - WebSockets
 - BullMQ

@@ -1,11 +1,13 @@
 ---
-description: 
-globs: 
+description: overview
+globs: .tsx 
 ---
 App Architecture: Manufacturing Efficiency Tracking System
 🔗App Demo on Loom 
 Overview
 The application is designed for industrial production facilities to track and optimize manufacturing efficiency. It allows users to log machine cycles, track bottlenecks, measure cycle times, and adjust production standards dynamically. The system will be built using Next.js, ShadCN, and React for the frontend, with a FastAPI layer and PostgreSQL database for the backend. Deployment will be handled via Fly.io using Docker and Docker Compose, with a mono repo structure to manage services. The app will leverage Orval for API interaction and implement cursor rules for both the frontend and backend.
+
+do not use any deprecated packages
 
 Technology Stack
 Frontend: Next.js, React, ShadCN (for UI components)

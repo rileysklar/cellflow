@@ -1,0 +1,163 @@
+---
+description: data
+globs: .tsx
+---
+ ---
+description: Data model schema for Manufacturing Efficiency Tracking System
+globs: ["apps/backend/models/*.py", "libs/database/**/*.ts"]
+---
+
+# Data Model Schema
+
+## Core Entities
+
+### Company
+- id: UUID (PK)
+- name: string
+- created_at: timestamp
+- updated_at: timestamp
+
+### Site
+- id: UUID (PK)
+- company_id: UUID (FK -> Company)
+- name: string
+- location: string
+- created_at: timestamp
+- updated_at: timestamp
+
+### ValueStream
+- id: UUID (PK)
+- site_id: UUID (FK -> Site)
+- name: string
+- description: string
+- target_efficiency: float
+- created_at: timestamp
+- updated_at: timestamp
+
+### Cell
+- id: UUID (PK)
+- value_stream_id: UUID (FK -> ValueStream)
+- name: string
+- description: string
+- status: enum(active, inactive, maintenance)
+- target_cycle_time: integer
+- created_at: timestamp
+- updated_at: timestamp
+
+### Operator
+- id: UUID (PK)
+- user_id: string (FK -> Clerk User)
+- cell_id: UUID (FK -> Cell)
+- name: string
+- role: enum(operator, supervisor, admin)
+- shift: enum(morning, afternoon, night)
+- created_at: timestamp
+- updated_at: timestamp
+
+### ProductionCycle
+- id: UUID (PK)
+- cell_id: UUID (FK -> Cell)
+- operator_id: UUID (FK -> Operator)
+- start_time: timestamp
+- end_time: timestamp
+- actual_cycle_time: integer
+- efficiency: float
+- status: enum(completed, interrupted, error)
+- notes: string
+- created_at: timestamp
+
+### Downtime
+- id: UUID (PK)
+- cell_id: UUID (FK -> Cell)
+- operator_id: UUID (FK -> Operator)
+- start_time: timestamp
+- end_time: timestamp
+- reason: enum(maintenance, setup, breakdown, material_shortage)
+- description: string
+- created_at: timestamp
+
+### EfficiencyMetric
+- id: UUID (PK)
+- entity_type: enum(cell, value_stream, site, company)
+- entity_id: UUID
+- timestamp: timestamp
+- efficiency: float
+- cycle_time: integer
+- bottleneck_status: boolean
+- created_at: timestamp
+
+## Relationships
+
+1. Company (1) -> (n) Site
+2. Site (1) -> (n) ValueStream
+3. ValueStream (1) -> (n) Cell
+4. Cell (1) -> (n) Operator
+5. Cell (1) -> (n) ProductionCycle
+6. Cell (1) -> (n) Downtime
+7. Operator (1) -> (n) ProductionCycle
+8. Operator (1) -> (n) Downtime
+
+## Access Control Rules
+
+### Company & Site Level
+- Locked upon user registration
+- Cannot be changed after initial setup
+- Admin access required for configuration
+
+### Value Stream & Cell Level
+- Can be switched by authorized users
+- Supervisors can manage configurations
+- Operators can view assigned areas
+
+### Operator Level
+- Limited to assigned Cell and Value Stream
+- Can log cycles and downtime
+- Cannot modify configuration settings
+
+## Efficiency Calculation Rules
+
+1. Cell Efficiency:
+   ```
+   efficiency = (standard_cycle_time / actual_cycle_time) * 100
+   ```
+
+2. Value Stream Efficiency:
+   ```
+   efficiency = avg(cell_efficiencies)
+   ```
+
+3. Site Efficiency:
+   ```
+   efficiency = avg(value_stream_efficiencies)
+   ```
+
+4. Company Efficiency:
+   ```
+   efficiency = avg(site_efficiencies)
+   ```
+
+## Bottleneck Detection
+
+1. Cell Level:
+   - Compare actual_cycle_time against target_cycle_time
+   - Flag if actual_cycle_time > target_cycle_time * 1.2
+
+2. Value Stream Level:
+   - Identify cell with highest average cycle time
+   - Compare against value stream target efficiency
+
+## Real-time Updates
+
+- WebSocket events emitted for:
+  1. Cycle completion
+  2. Downtime logging
+  3. Efficiency updates
+  4. Bottleneck detection
+
+## Background Processing
+
+- BullMQ jobs for:
+  1. Efficiency calculations
+  2. Bottleneck analysis
+  3. Report generation
+  4. Historical data aggregation
