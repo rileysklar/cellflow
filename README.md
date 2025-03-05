@@ -2,7 +2,7 @@
 
 A modern, production-ready fullstack web application template engineered for AI-enhanced development workflows. This template is optimized for rapid development with AI assistants like Cursor and designed to showcase best practices for integrating AI tooling into your development process.
 
-![Materialize Labs](https://materializelabs.com/images/logo.png)
+Created by the team at [Materialize Labs](https://materializelabs.com).
 
 ## 🌟 Features
 
@@ -40,23 +40,26 @@ A modern, production-ready fullstack web application template engineered for AI-
 
 ```
 ai-optimized-starter-app/
+├── .cursor/rules/          # AI assistant guidelines
 ├── actions/                # Server actions
 │   └── db/                 # Database-related actions
 ├── app/                    # Next.js app router
-│   ├── api/                # API routes
 │   ├── (auth)/             # Authentication routes
 │   │   ├── login/          # Login page
 │   │   └── signup/         # Signup page
+│   ├── (landing)/          # Landing page route
 │   ├── contacts/           # Contacts example route
 │   └── layout.tsx          # Root layout
 ├── components/             # Shared components
 │   ├── landing/            # Landing page components
+│   ├── magicui/            # Magic UI animation components
+│   ├── sidebar/            # Sidebar components
 │   ├── ui/                 # Shadcn UI components
 │   └── utilities/          # Utility components
-├── .cursor/rules/          # AI assistant guidelines
 ├── db/                     # Database configuration
 │   └── schema/             # Database schema definitions
 ├── lib/                    # Utility functions
+│   └── hooks/              # Custom hooks
 ├── public/                 # Static assets
 ├── supabase/               # Supabase configuration
 │   └── migrations/         # Database migrations
@@ -131,11 +134,10 @@ When using Cursor, these rules are automatically loaded to help the AI generate 
 
 You'll need free accounts with these services:
 
-- [GitHub](https://github.com/) - Version control
 - [Supabase](https://supabase.com/) - Database
 - [Clerk](https://clerk.com/) - Authentication
-- [Vercel](https://vercel.com/) - Deployment (optional)
 - [Cursor](https://www.cursor.com/) - Recommended editor
+- [Vercel](https://vercel.com/) - Deployment (optional)
 
 ### Setup Process
 
@@ -255,7 +257,7 @@ If you see errors like "relation does not exist":
 This template is optimized for AI-pair programming using Cursor:
 
 1. **Explore with AI**: Use Cursor's AI assistant to understand the codebase
-2. **Follow Conventions**: Cursor will follow the patterns defined in cursor_rules/
+2. **Follow Conventions**: Cursor will follow the patterns defined in .cursor/rules
 3. **Rapid Iteration**: Get AI-generated boilerplate for new features
 4. **Type Safety**: TypeScript provides end-to-end type safety
 
@@ -266,13 +268,82 @@ When implementing new features:
 3. Build UI components in `components/`
 4. Create pages in `app/`
 
+## 🚀 Deploying to Vercel
+
+### 1. Create a Vercel Account
+
+If you don't already have one, create a free account at [Vercel](https://vercel.com/).
+
+### 2. Install Vercel CLI (Optional)
+
+```bash
+npm install -g vercel
+```
+
+### 3. Connect Your Repository
+
+#### Option 1: Deploy via Vercel Dashboard
+
+1. Go to [vercel.com/new](https://vercel.com/new)
+2. Import your GitHub/GitLab/Bitbucket repository
+3. Select the repository with your project
+
+#### Option 2: Deploy via Vercel CLI
+
+```bash
+vercel
+```
+
+### 4. Configure Environment Variables
+
+Add all the required environment variables from your `.env.local` file to the Vercel project:
+
+1. Go to your project in the Vercel dashboard
+2. Navigate to Settings → Environment Variables
+3. Add all the variables from your `.env.local` file:
+   - DATABASE_URL
+   - NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
+   - CLERK_SECRET_KEY
+   - NEXT_PUBLIC_CLERK_SIGN_IN_URL
+   - NEXT_PUBLIC_CLERK_SIGN_UP_URL
+
+### 5. Configure Build Settings
+
+Ensure your build settings are correctly configured:
+
+1. Framework Preset: Next.js
+2. Build Command: `next build`
+3. Output Directory: `.next`
+
+### 6. Deploy
+
+Click "Deploy" in the Vercel dashboard or run:
+
+```bash
+vercel --prod
+```
+
+### 7. Verify Your Deployment
+
+After deployment completes:
+
+1. Visit your new Vercel URL
+2. Test authentication by signing up and logging in
+3. Verify database connections by testing the Contacts feature
+
+### 8. Set Up Custom Domain (Optional)
+
+1. Go to your project settings in Vercel
+2. Navigate to Domains
+3. Add your custom domain and follow the verification steps
+
 ## 📝 Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## 🎓 Support
 
-If you need help or have questions, please contact us at [alex@materializelabs.com](mailto:alex@materializelabs.com).
+If you need help or have questions, please contact [alex@materializelabs.com](mailto:alex@materializelabs.com).
 
 ## 📄 License
 
