@@ -48,7 +48,7 @@ export default function Header() {
       <div className="mx-auto flex max-w-screen-2xl items-center justify-between p-4">
         <div className="flex items-center space-x-2 hover:cursor-pointer hover:opacity-80">
           <Link href="/" className="text-xl font-bold">
-            Materialize Labs AI Optimized Starter App
+            AI Optimized Starter App
           </Link>
         </div>
 
