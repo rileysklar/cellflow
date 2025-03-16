@@ -69,15 +69,15 @@ export default async function DashboardPage() {
 When using authentication in server actions, always await the auth helper:
 
 ```tsx
-// actions/notes-actions.ts
+// actions/notes.ts
 "use server"
 
 import { auth } from "@clerk/nextjs/server"
 import { db } from "@/db/db"
-import { notesTable } from "@/db/schema"
-import { ActionState } from "@/types"
+import { notesTable } from "@/db/schema/notes"
+import { ActionState } from "@/types/server-action"
 
-export async function createNoteAction(
+export async function createNote(
   content: string
 ): Promise<ActionState<{ id: string }>> {
   try {
@@ -103,6 +103,7 @@ export async function createNoteAction(
     }
   } catch (error) {
     console.error("Failed to create note:", error)
+
     return {
       isSuccess: false,
       message: "Failed to create note"

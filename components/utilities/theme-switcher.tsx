@@ -1,47 +1,42 @@
-"use client"
+'use client'
 
-import { cn } from "@/lib/utils"
-import { Moon, Sun } from "lucide-react"
-import { useTheme } from "next-themes"
-import { HTMLAttributes, ReactNode, useEffect, useState } from "react"
+import { motion } from 'framer-motion'
+import { Moon, Sun } from 'lucide-react'
+import { useTheme } from 'next-themes'
 
-interface ThemeSwitcherProps extends HTMLAttributes<HTMLDivElement> {
-  children?: ReactNode
+import { useMounted } from '@/lib/hooks/use-mounted'
+import { cn } from '@/lib/utils'
+import { Theme } from '@/types/theme'
+
+interface ThemeSwitcherProps {
+  className?: string
 }
 
-export const ThemeSwitcher = ({ children, ...props }: ThemeSwitcherProps) => {
+const ThemeSwitcher = ({ ...props }: ThemeSwitcherProps) => {
   const { setTheme, theme } = useTheme()
-  const [mounted, setMounted] = useState(false)
+  const mounted = useMounted()
 
-  // useEffect only runs on the client, so now we can safely show the UI
-  useEffect(() => {
-    setMounted(true)
-  }, [])
-
-  const handleChange = (theme: "dark" | "light") => {
-    localStorage.setItem("theme", theme)
+  const handleChange = (theme: Theme) => {
+    localStorage.setItem('theme', theme)
     setTheme(theme)
   }
 
+  // useTheme is not available during SSR
+  if (!mounted) {
+    return null
+  }
+
   return (
-    <div
-      className={cn(
-        "p-1 hover:cursor-pointer hover:opacity-50",
-        props.className
-      )}
-      onClick={() =>
-        mounted && handleChange(theme === "light" ? "dark" : "light")
-      }
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.2, delay: 0.2 }}
+      className={cn('p-1 hover:cursor-pointer hover:opacity-50', props.className)}
+      onClick={() => handleChange(theme === 'light' ? 'dark' : 'light')}
     >
-      {mounted ? (
-        theme === "dark" ? (
-          <Moon className="size-6" />
-        ) : (
-          <Sun className="size-6" />
-        )
-      ) : (
-        <div className="size-6" />
-      )}
-    </div>
+      {theme === 'dark' ? <Moon className="size-6" /> : <Sun className="size-6" />}
+    </motion.div>
   )
 }
+
+export default ThemeSwitcher

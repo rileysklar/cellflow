@@ -1,0 +1,8 @@
+{
+  "semi": false,
+  "arrowParens": "avoid",
+  "trailingComma": "all",
+  "singleQuote": true,
+  "printWidth": 100,
+  "plugins": ["prettier-plugin-packagejson", "prettier-plugin-tailwindcss"]
+}

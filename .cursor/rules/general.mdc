@@ -94,21 +94,16 @@ Our application uses a modern, full-stack architecture:
 ### Type Definitions
 
 - Place all types in the `types/` directory
-- Name type files with `-types.ts` suffix (e.g., `user-types.ts`)
-- Export all types through `types/index.ts`
 - Prefer interfaces over type aliases
 - Reference DB types from `@/db/schema` (e.g., `SelectContact`)
 
 ### Type Examples
 
 ```ts
-// types/actions-types.ts
+// types/actions.ts
 export type ActionState<T> =
   | { isSuccess: true; message: string; data: T }
   | { isSuccess: false; message: string; data?: never }
-
-// types/index.ts
-export * from "./actions-types"
 ```
 
 ## Context Tags

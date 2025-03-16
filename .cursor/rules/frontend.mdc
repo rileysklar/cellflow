@@ -9,7 +9,7 @@ alwaysApply: false
 
 Our frontend leverages a modern stack designed for performance, developer experience, and maintainability:
 
-- **Framework**: Next.js 14+ with App Router
+- **Framework**: Next.js 15+ with App Router
 - **Styling**: Tailwind CSS for utility-first styling
 - **UI Components**: Shadcn UI as a component foundation
 - **Animations**: Framer Motion for fluid animations
@@ -92,6 +92,7 @@ components/
 // Good: Fetch in server components
 async function ProductList() {
   const products = await getProductsAction()
+
   return <ProductGrid products={products.data} />
 }
 ```
@@ -113,7 +114,8 @@ export default function Page() {
 
 // Async component in same file or imported
 async function ProductsContent() {
-  const products = await getProductsAction()
+  const products = await getProducts()
+
   return <ProductList products={products.data} />
 }
 ```
@@ -126,7 +128,7 @@ async function ProductsContent() {
 // app/dashboard/layout.tsx
 import { SidebarNav } from "./_components/sidebar-nav"
 import { DashboardHeader } from "./_components/dashboard-header"
-import { getProfileAction } from "@/actions/profile-actions"
+import { getProfile } from "@/actions/profile"
 import { redirect } from "next/navigation"
 
 export default async function DashboardLayout({
@@ -134,7 +136,7 @@ export default async function DashboardLayout({
 }: {
   children: React.ReactNode
 }) {
-  const profile = await getProfileAction()
+  const profile = await getProfile()
   
   if (!profile.isSuccess) {
     return redirect("/login")
@@ -181,12 +183,14 @@ export default function DashboardPage() {
 }
 
 async function DashboardMetricsContent() {
-  const metrics = await getMetricsAction()
+  const metrics = await getMetrics()
+
   return <DashboardMetrics data={metrics.data} />
 }
 
 async function DashboardChartsContent() {
-  const chartData = await getChartDataAction()
+  const chartData = await getChartData()
+
   return <DashboardCharts data={chartData.data} />
 }
 ```
@@ -238,7 +242,7 @@ import { useState } from "react"
 import { z } from "zod"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { createContactAction } from "@/actions/db/contacts-actions"
+import { createContact } from "@/actions/db/contacts"
 
 const formSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -258,7 +262,7 @@ export function ContactForm() {
       formSchema.parse({ name, email })
       
       // Submit form using server action
-      await createContactAction({ name, email })
+      await createContact({ name, email })
       
       // Reset form
       setName("")

@@ -73,8 +73,7 @@ This structure:
 ### Action Structure
 
 - Store storage actions in `actions/storage/` directory
-- Name files descriptively: `profile-storage-actions.ts`
-- Add `Storage` suffix to function names: `uploadAvatarStorage`
+- Name files descriptively: `profile-storage.ts`
 - Follow the standardized `ActionState<T>` return pattern
 
 ### Example Storage Action
@@ -85,7 +84,7 @@ This structure:
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
 import { ActionState } from "@/types"
 
-export async function uploadFileStorage(
+export async function uploadFile(
   bucket: string,
   path: string,
   file: File
@@ -109,6 +108,7 @@ export async function uploadFileStorage(
     }
   } catch (error) {
     console.error("Error uploading file:", error)
+
     return { isSuccess: false, message: "Failed to upload file" }
   }
 }
@@ -172,7 +172,7 @@ Key upload considerations:
 "use client"
 
 import { useState } from "react"
-import { uploadFileStorage } from "@/actions/storage/profile-storage-actions"
+import { uploadFile } from "@/actions/storage/profile"
 
 export function AvatarUploader() {
   const [isUploading, setIsUploading] = useState(false)
@@ -199,7 +199,7 @@ export function AvatarUploader() {
       const path = `${userId}/avatars/${filename}`
       
       // Upload file
-      const result = await uploadFileStorage("profile-images", path, file)
+      const result = await uploadFile("profile-images", path, file)
       
       if (!result.isSuccess) {
         throw new Error(result.message)

@@ -1,17 +1,14 @@
-"use client"
+'use client'
 
-import {
-  createContactAction,
-  deleteContactAction,
-  updateContactAction
-} from "@/actions/db/contacts-actions"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { SelectContact } from "@/db/schema"
-import { PlusCircle, Trash2, Edit, User } from "lucide-react"
-import { useState } from "react"
+import { Edit, PlusCircle, Trash2, User } from 'lucide-react'
+import { useState } from 'react'
+
+import { createContact, deleteContact, updateContact } from '@/actions/db/contacts'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { SelectContact } from '@/db/schema/contacts'
 
 interface ContactListProps {
   userId: string
@@ -19,44 +16,40 @@ interface ContactListProps {
 }
 
 export function ContactList({ userId, initialContacts }: ContactListProps) {
-  const [name, setName] = useState("")
-  const [email, setEmail] = useState("")
-  const [phone, setPhone] = useState("")
-  const [notes, setNotes] = useState("")
+  const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
+  const [phone, setPhone] = useState('')
+  const [notes, setNotes] = useState('')
   const [contacts, setContacts] = useState(initialContacts)
   const [editingId, setEditingId] = useState<string | null>(null)
 
   const resetForm = () => {
-    setName("")
-    setEmail("")
-    setPhone("")
-    setNotes("")
+    setName('')
+    setEmail('')
+    setPhone('')
+    setNotes('')
     setEditingId(null)
   }
 
   const handleAddContact = async () => {
-    if (name.trim() !== "") {
+    if (name.trim() !== '') {
       if (editingId) {
-        // Update existing contact
-        const result = await updateContactAction(editingId, {
+        const result = await updateContact(editingId, {
           name,
           email,
           phone,
-          notes
+          notes,
         })
 
         if (result.isSuccess) {
           setContacts(prevContacts =>
-            prevContacts.map(contact =>
-              contact.id === editingId ? result.data : contact
-            )
+            prevContacts.map(contact => (contact.id === editingId ? result.data : contact)),
           )
           resetForm()
         } else {
-          console.error("Error updating contact:", result.message)
+          console.error('Error updating contact:', result.message)
         }
       } else {
-        // Add new contact
         const newContactData = {
           id: Date.now().toString(),
           userId,
@@ -65,29 +58,27 @@ export function ContactList({ userId, initialContacts }: ContactListProps) {
           phone,
           notes,
           createdAt: new Date(),
-          updatedAt: new Date()
+          updatedAt: new Date(),
         }
         setContacts(prevContacts => [...prevContacts, newContactData])
         resetForm()
 
-        const result = await createContactAction({
+        const result = await createContact({
           userId: userId,
           name,
           email,
           phone,
-          notes
+          notes,
         })
 
         if (result.isSuccess) {
           setContacts(prevContacts =>
-            prevContacts.map(contact =>
-              contact.id === newContactData.id ? result.data : contact
-            )
+            prevContacts.map(contact => (contact.id === newContactData.id ? result.data : contact)),
           )
         } else {
-          console.error("Error creating contact:", result.message)
+          console.error('Error creating contact:', result.message)
           setContacts(prevContacts =>
-            prevContacts.filter(contact => contact.id !== newContactData.id)
+            prevContacts.filter(contact => contact.id !== newContactData.id),
           )
         }
       }
@@ -96,17 +87,15 @@ export function ContactList({ userId, initialContacts }: ContactListProps) {
 
   const handleEditContact = (contact: SelectContact) => {
     setName(contact.name)
-    setEmail(contact.email || "")
-    setPhone(contact.phone || "")
-    setNotes(contact.notes || "")
+    setEmail(contact.email || '')
+    setPhone(contact.phone || '')
+    setNotes(contact.notes || '')
     setEditingId(contact.id)
   }
 
   const handleRemoveContact = async (id: string) => {
-    setContacts(prevContacts =>
-      prevContacts.filter(contact => contact.id !== id)
-    )
-    await deleteContactAction(id)
+    setContacts(prevContacts => prevContacts.filter(contact => contact.id !== id))
+    await deleteContact(id)
   }
 
   return (
@@ -114,12 +103,8 @@ export function ContactList({ userId, initialContacts }: ContactListProps) {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            {editingId ? "Edit Contact" : "Add New Contact"}
-            {editingId ? (
-              <Edit className="size-5" />
-            ) : (
-              <PlusCircle className="size-5" />
-            )}
+            {editingId ? 'Edit Contact' : 'Add New Contact'}
+            {editingId ? <Edit className="size-5" /> : <PlusCircle className="size-5" />}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -178,9 +163,7 @@ export function ContactList({ userId, initialContacts }: ContactListProps) {
                 Cancel
               </Button>
             )}
-            <Button onClick={handleAddContact}>
-              {editingId ? "Update" : "Add"} Contact
-            </Button>
+            <Button onClick={handleAddContact}>{editingId ? 'Update' : 'Add'} Contact</Button>
           </div>
         </CardContent>
       </Card>
@@ -198,9 +181,7 @@ export function ContactList({ userId, initialContacts }: ContactListProps) {
             </div>
           </Card>
         ) : (
-          <div
-            className={`grid gap-4 ${contacts.length === 1 ? "grid-cols-1" : "md:grid-cols-2"}`}
-          >
+          <div className={`grid gap-4 ${contacts.length === 1 ? 'grid-cols-1' : 'md:grid-cols-2'}`}>
             {contacts.map(contact => (
               <Card key={contact.id}>
                 <CardContent className="p-5">
@@ -208,14 +189,10 @@ export function ContactList({ userId, initialContacts }: ContactListProps) {
                     <div className="space-y-1">
                       <h3 className="font-medium">{contact.name}</h3>
                       {contact.email && (
-                        <p className="text-muted-foreground text-sm">
-                          {contact.email}
-                        </p>
+                        <p className="text-muted-foreground text-sm">{contact.email}</p>
                       )}
                       {contact.phone && (
-                        <p className="text-muted-foreground text-sm">
-                          {contact.phone}
-                        </p>
+                        <p className="text-muted-foreground text-sm">{contact.phone}</p>
                       )}
                       {contact.notes && (
                         <p className="border-muted mt-2 border-l-2 pl-2 text-sm italic">

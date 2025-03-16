@@ -1,41 +1,37 @@
-"use client"
+import { ComponentPropsWithoutRef } from 'react'
 
-import { ReactNode, useEffect, useState } from "react"
+import { cn } from '@/lib/utils'
 
-import { cn } from "@/lib/utils"
-
-interface AnimatedGradientTextProps {
-  children: ReactNode
-  className?: string
+export interface AnimatedGradientTextProps extends ComponentPropsWithoutRef<'span'> {
+  speed?: number
+  colorFrom?: string
+  colorTo?: string
 }
 
-export const AnimatedGradientText = ({
+export function AnimatedGradientText({
   children,
-  className
-}: AnimatedGradientTextProps) => {
-  const [mounted, setMounted] = useState(false)
-
-  // useEffect only runs on the client, so now we can safely show the UI
-  useEffect(() => {
-    setMounted(true)
-  }, [])
-
+  className,
+  speed = 1,
+  colorFrom = '#ffaa40',
+  colorTo = '#9c40ff',
+  ...props
+}: AnimatedGradientTextProps) {
   return (
-    <div
+    <span
+      style={
+        {
+          '--bg-size': `${speed * 300}%`,
+          '--color-from': colorFrom,
+          '--color-to': colorTo,
+        } as React.CSSProperties
+      }
       className={cn(
-        mounted
-          ? "from-primary bg-gradient-to-r via-purple-500 to-pink-600 bg-clip-text text-transparent"
-          : "text-transparent",
-        className
+        `animate-gradient inline bg-gradient-to-r from-[var(--color-from)] via-[var(--color-to)] to-[var(--color-from)] bg-[length:var(--bg-size)_100%] bg-clip-text text-transparent`,
+        className,
       )}
+      {...props}
     >
-      {mounted ? (
-        <div className="animate-gradient-x from-primary bg-gradient-to-r via-purple-500 to-pink-600 bg-clip-text text-transparent">
-          {children}
-        </div>
-      ) : (
-        children
-      )}
-    </div>
+      {children}
+    </span>
   )
 }

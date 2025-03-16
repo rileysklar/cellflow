@@ -1,12 +1,10 @@
-"use server"
+'use server'
 
-import Header from "@/components/header"
+import React from 'react'
 
-export default async function LandingLayout({
-  children
-}: {
-  children: React.ReactNode
-}) {
+import Header from '@/components/header'
+
+export default async function LandingLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex min-h-screen flex-col">
       <Header />
