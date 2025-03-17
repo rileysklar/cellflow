@@ -4,7 +4,7 @@ import { eq } from 'drizzle-orm'
 
 import { db } from '@/db/db'
 import { contactsTable, InsertContact, SelectContact } from '@/db/schema/contacts'
-import { ActionState } from '@/types/server-action'
+import { ActionState } from '@/lib/types/server-action'
 
 export async function createContact(contact: InsertContact): Promise<ActionState<SelectContact>> {
   try {

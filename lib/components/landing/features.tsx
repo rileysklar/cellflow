@@ -5,7 +5,7 @@ import { Code, Database, LayoutGrid, Paintbrush, Server, ShieldCheck, Terminal }
 import Link from 'next/link'
 import React from 'react'
 
-import { Button } from '@/components/ui/button'
+import { Button } from '@/lib/components/ui/button'
 import { cn } from '@/lib/utils'
 
 interface FeatureProps {

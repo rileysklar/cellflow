@@ -4,20 +4,20 @@ Configures Next.js for the app.
 </ai_context>
 */
 
-import NextBundleAnalyzer from "@next/bundle-analyzer"
+import NextBundleAnalyzer from '@next/bundle-analyzer'
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    remotePatterns: [{ hostname: "localhost" }]
+    remotePatterns: [{ hostname: 'localhost' }],
   },
   experimental: {
-    turbo: {}
-  }
+    turbo: {},
+  },
 }
 
 const withBundleAnalyzer = NextBundleAnalyzer({
-  enabled: process.env.ANALYZE === "true"
+  enabled: process.env.ANALYZE === 'true',
 })
 
 export default withBundleAnalyzer(nextConfig)

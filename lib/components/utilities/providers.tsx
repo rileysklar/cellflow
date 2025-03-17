@@ -3,7 +3,7 @@
 import { ThemeProvider as NextThemesProvider } from 'next-themes'
 import { ThemeProviderProps } from 'next-themes'
 
-import { TooltipProvider } from '@/components/ui/tooltip'
+import { TooltipProvider } from '@/lib/components/ui/tooltip'
 
 export const Providers = ({ children, ...props }: ThemeProviderProps) => {
   return (

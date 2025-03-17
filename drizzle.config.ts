@@ -10,7 +10,7 @@ import { defineConfig } from 'drizzle-kit'
 config({ path: '.env.local' })
 
 export default defineConfig({
-  schema: './db/schema',
+  schema: './lib/db/schema',
   out: './supabase/migrations',
   dialect: 'postgresql',
   dbCredentials: {

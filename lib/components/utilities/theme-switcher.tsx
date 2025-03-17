@@ -5,8 +5,8 @@ import { Moon, Sun } from 'lucide-react'
 import { useTheme } from 'next-themes'
 
 import { useMounted } from '@/lib/hooks/use-mounted'
+import { Theme } from '@/lib/types/theme'
 import { cn } from '@/lib/utils'
-import { Theme } from '@/types/theme'
 
 interface ThemeSwitcherProps {
   className?: string

@@ -5,8 +5,8 @@ import { Menu, Rocket, X } from 'lucide-react'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 
-import { Button } from '@/components/ui/button'
-import ThemeSwitcher from '@/components/utilities/theme-switcher'
+import { Button } from '@/lib/components/ui/button'
+import ThemeSwitcher from '@/lib/components/utilities/theme-switcher'
 
 interface NavLink {
   href: string

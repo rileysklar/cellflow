@@ -1,9 +1,9 @@
 import { auth } from '@clerk/nextjs/server'
 import { redirect } from 'next/navigation'
 
-import { getProfileByUserId } from '@/actions/db/profiles'
-import { AppSidebar } from '@/components/sidebar/app-sidebar'
-import { SidebarProvider } from '@/components/ui/sidebar'
+import { getProfileByUserId } from '@/lib/actions/db/profiles'
+import { AppSidebar } from '@/lib/components/sidebar/app-sidebar'
+import { SidebarProvider } from '@/lib/components/ui/sidebar'
 
 import { ContactsNavbar } from './_components/contacts-navbar'
 

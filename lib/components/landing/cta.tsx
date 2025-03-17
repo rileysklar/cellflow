@@ -4,8 +4,8 @@ import { motion } from 'framer-motion'
 import { ExternalLink, Github } from 'lucide-react'
 import Link from 'next/link'
 
-import { AnimatedGradientText } from '@/components/magicui/animated-gradient-text'
-import { Button } from '@/components/ui/button'
+import { AnimatedGradientText } from '@/lib/components/magicui/animated-gradient-text'
+import { Button } from '@/lib/components/ui/button'
 import { cn } from '@/lib/utils'
 
 export const CTASection = () => {

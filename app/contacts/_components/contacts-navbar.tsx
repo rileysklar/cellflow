@@ -4,9 +4,9 @@ import { UserButton } from '@clerk/nextjs'
 import { Contact, Menu } from 'lucide-react'
 import { useEffect, useState } from 'react'
 
-import { Button } from '@/components/ui/button'
-import { useSidebar } from '@/components/ui/sidebar'
-import ThemeSwitcher from '@/components/utilities/theme-switcher'
+import { Button } from '@/lib/components/ui/button'
+import { useSidebar } from '@/lib/components/ui/sidebar'
+import ThemeSwitcher from '@/lib/components/utilities/theme-switcher'
 
 export function ContactsNavbar() {
   const { toggleSidebar } = useSidebar()
