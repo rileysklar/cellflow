@@ -22,7 +22,9 @@ Configures the TypeScript compiler options for the app.
       }
     ],
     "paths": {
-      "@/*": ["./*"]
+      "@/app/*": ["./app/*"],
+      "@/db/*": ["./db/*"],
+      "@/lib/*": ["./lib/*"]
     },
     "target": "ES2017"
   },

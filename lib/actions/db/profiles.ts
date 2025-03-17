@@ -11,7 +11,7 @@ import { eq } from 'drizzle-orm'
 
 import { db } from '@/db/db'
 import { InsertProfile, profilesTable, SelectProfile } from '@/db/schema/profiles'
-import { ActionState } from '@/types/server-action'
+import { ActionState } from '@/lib//types/server-action'
 
 export async function createProfile(data: InsertProfile): Promise<ActionState<SelectProfile>> {
   try {

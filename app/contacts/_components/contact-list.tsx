@@ -3,12 +3,12 @@
 import { Edit, PlusCircle, Trash2, User } from 'lucide-react'
 import { useState } from 'react'
 
-import { createContact, deleteContact, updateContact } from '@/actions/db/contacts'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 import { SelectContact } from '@/db/schema/contacts'
+import { createContact, deleteContact, updateContact } from '@/lib/actions/db/contacts'
+import { Button } from '@/lib/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/lib/components/ui/card'
+import { Input } from '@/lib/components/ui/input'
+import { Label } from '@/lib/components/ui/label'
 
 interface ContactListProps {
   userId: string

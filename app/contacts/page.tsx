@@ -10,9 +10,9 @@ Updated with a cleaner design to match the site's overall aesthetic and to ensur
 import { auth } from '@clerk/nextjs/server'
 import { redirect } from 'next/navigation'
 
-import { getContacts } from '@/actions/db/contacts'
-import { getProfileByUserId } from '@/actions/db/profiles'
 import { ContactList } from '@/app/contacts/_components/contact-list'
+import { getContacts } from '@/lib/actions/db/contacts'
+import { getProfileByUserId } from '@/lib/actions/db/profiles'
 
 export default async function ContactsPage() {
   const { userId } = await auth()

@@ -2,7 +2,7 @@
 
 import React from 'react'
 
-import Header from '@/components/header'
+import Header from '@/lib/components/header'
 
 export default async function LandingLayout({ children }: { children: React.ReactNode }) {
   return (

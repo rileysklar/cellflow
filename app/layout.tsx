@@ -5,10 +5,10 @@ import { auth } from '@clerk/nextjs/server'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 
-import { createProfile, getProfileByUserId } from '@/actions/db/profiles'
-import { Toaster } from '@/components/ui/sonner'
-import { Providers } from '@/components/utilities/providers'
-import { TailwindIndicator } from '@/components/utilities/tailwind-indicator'
+import { createProfile, getProfileByUserId } from '@/lib/actions/db/profiles'
+import { Toaster } from '@/lib/components/ui/sonner'
+import { Providers } from '@/lib/components/utilities/providers'
+import { TailwindIndicator } from '@/lib/components/utilities/tailwind-indicator'
 import { cn } from '@/lib/utils'
 
 const inter = Inter({ subsets: ['latin'] })
