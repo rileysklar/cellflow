@@ -1,8 +1,8 @@
-"use client"
+'use client'
 
-import { SignIn } from "@clerk/nextjs"
-import { dark } from "@clerk/themes"
-import { useTheme } from "next-themes"
+import { SignIn } from '@clerk/nextjs'
+import { dark } from '@clerk/themes'
+import { useTheme } from 'next-themes'
 
 export default function LoginPage() {
   const { theme } = useTheme()
@@ -10,7 +10,7 @@ export default function LoginPage() {
   return (
     <SignIn
       forceRedirectUrl="/contacts"
-      appearance={{ baseTheme: theme === "dark" ? dark : undefined }}
+      appearance={{ baseTheme: theme === 'dark' ? dark : undefined }}
     />
   )
 }

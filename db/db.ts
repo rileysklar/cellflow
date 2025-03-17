@@ -5,16 +5,18 @@ Updated to implement proper connection pooling to prevent "too many clients" err
 </ai_context>
 */
 
-import { profilesTable, contactsTable } from "@/db/schema"
-import { config } from "dotenv"
-import { drizzle } from "drizzle-orm/postgres-js"
-import postgres from "postgres"
+import { config } from 'dotenv'
+import { drizzle } from 'drizzle-orm/postgres-js'
+import postgres from 'postgres'
 
-config({ path: ".env.local" })
+import { contactsTable } from '@/db/schema/contacts'
+import { profilesTable } from '@/db/schema/profiles'
+
+config({ path: '.env.local' })
 
 const schema = {
   profiles: profilesTable,
-  contacts: contactsTable
+  contacts: contactsTable,
 }
 
 // Global is used here to maintain a cached connection across hot reloads
@@ -27,11 +29,10 @@ function getClient() {
 
   const connectionString = process.env.DATABASE_URL!
 
-  // Connection options to limit the number of connections
   const options = {
-    max: 10, // Set max pool size to 10
-    idle_timeout: 20, // Close idle connections after 20 seconds
-    connect_timeout: 10 // Connection timeout after 10 seconds
+    max: 10,
+    idle_timeout: 20,
+    connect_timeout: 10,
   }
 
   cachedClient = postgres(connectionString, options)

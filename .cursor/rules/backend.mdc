@@ -30,15 +30,14 @@ db/
 ├── index.ts             # Public exports
 ├── migrations/          # Database migrations
 └── schema/              # Database schema definitions
-    ├── index.ts         # Schema exports
-    └── [entity]-schema.ts  # Individual entity schemas
+    ├── [entity].ts  # Individual entity schemas
 ```
 
 ### Schema Definition Standards
 
 #### Naming Conventions
 
-- Use kebab-case for files: `contacts-schema.ts`
+- Use kebab-case for files: `contacts.ts`
 - Use camelCase for table and column names in code
 - Use snake_case for the actual database column names
 - Export types with standardized prefixes: `Select[Entity]` and `Insert[Entity]`
@@ -92,7 +91,7 @@ projectId: uuid("project_id")
 ### Schema Example
 
 ```typescript
-// db/schema/contacts-schema.ts
+// db/schema/contacts.ts
 import { pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core"
 
 export const contactsTable = pgTable("contacts", {
@@ -117,7 +116,7 @@ Make sure to export your schema from the index file:
 
 ```typescript
 // db/schema/index.ts
-export * from "./contacts-schema"
+export * from "./contacts"
 // ... other schema exports
 ```
 
@@ -141,11 +140,9 @@ Server Actions are our primary method for exposing backend functionality. They p
 
 ```
 actions/
-├── index.ts             # Re-exports from subfolders
 ├── auth/                # Authentication-related actions
 ├── db/                  # Database operations
-│   ├── index.ts
-│   └── [entity]-actions.ts
+│   ├── [entity].ts
 └── utils/               # Utility actions
 ```
 
@@ -156,7 +153,7 @@ actions/
 ```typescript
 export type ActionState<T> =
   | { isSuccess: true; message: string; data: T }
-  | { isSuccess: false; message: string; data?: never; error?: unknown }
+  | { isSuccess: false; message: string; data?: never }
 ```
 
 2. **Naming Convention**: All action functions should end with `Action` suffix
@@ -170,83 +167,88 @@ export type ActionState<T> =
 ### Server Action Example
 
 ```typescript
-// actions/db/contacts-actions.ts
-"use server"
+// actions/db/contacts.ts
+'use server'
 
-import { db } from "@/db/db"
-import { contactsTable, InsertContact, SelectContact } from "@/db/schema"
-import { ActionState } from "@/types"
-import { eq } from "drizzle-orm"
-import { z } from "zod"
+import { eq } from 'drizzle-orm'
 
-// Validation schema
-const contactSchema = z.object({
-  name: z.string().min(1, "Name is required"),
-  email: z.string().email().optional().nullable(),
-  phone: z.string().optional().nullable(),
-  notes: z.string().optional().nullable()
-})
+import { db } from '@/db/db'
+import { contactsTable, InsertContact, SelectContact } from '@/db/schema/contacts'
+import { ActionState } from '@/types/server-action'
 
-export async function createContactAction(
-  data: InsertContact
-): Promise<ActionState<SelectContact>> {
+export async function createContact(contact: InsertContact): Promise<ActionState<SelectContact>> {
   try {
-    // Validate input
-    const validated = contactSchema.parse(data)
-    
-    // Execute database operation
-    const [newContact] = await db.insert(contactsTable)
-      .values(validated)
-      .returning()
-      
+    const [newContact] = await db.insert(contactsTable).values(contact).returning()
+
     return {
       isSuccess: true,
-      message: "Contact created successfully",
-      data: newContact
+      message: 'Contact created successfully',
+      data: newContact,
     }
   } catch (error) {
-    console.error("Error creating contact:", error)
-    
-    // Handle validation errors specifically
-    if (error instanceof z.ZodError) {
-      return { 
-        isSuccess: false, 
-        message: error.errors.map(e => e.message).join(", "),
-        error 
-      }
-    }
-    
-    return { 
-      isSuccess: false, 
-      message: "Failed to create contact",
-      error
-    }
+    console.error('Error creating contact:', error)
+
+    return { isSuccess: false, message: 'Failed to create contact' }
   }
 }
 
-export async function getContactsAction(
-  userId: string
-): Promise<ActionState<SelectContact[]>> {
+export async function getContacts(userId: string): Promise<ActionState<SelectContact[]>> {
   try {
     const contacts = await db.query.contacts.findMany({
       where: eq(contactsTable.userId, userId),
-      orderBy: (contacts) => [contacts.updatedAt.desc()]
     })
-    
+
     return {
       isSuccess: true,
-      message: "Contacts retrieved successfully",
-      data: contacts
+      message: 'Contacts retrieved successfully',
+      data: contacts,
     }
   } catch (error) {
-    console.error("Error fetching contacts:", error)
-    return { 
-      isSuccess: false, 
-      message: "Failed to retrieve contacts",
-      error
-    }
+    console.error('Error getting contacts:', error)
+
+    return { isSuccess: false, message: 'Failed to get contacts' }
   }
 }
+
+export async function updateContact(
+  id: string,
+  data: Partial<InsertContact>,
+): Promise<ActionState<SelectContact>> {
+  try {
+    const [updatedContact] = await db
+      .update(contactsTable)
+      .set(data)
+      .where(eq(contactsTable.id, id))
+      .returning()
+
+    return {
+      isSuccess: true,
+      message: 'Contact updated successfully',
+      data: updatedContact,
+    }
+  } catch (error) {
+    console.error('Error updating contact:', error)
+
+    return { isSuccess: false, message: 'Failed to update contact' }
+  }
+}
+
+export async function deleteContact(id: string): Promise<ActionState<void>> {
+  try {
+    await db.delete(contactsTable).where(eq(contactsTable.id, id))
+
+    return {
+      isSuccess: true,
+      message: 'Contact deleted successfully',
+      data: undefined,
+    }
+  } catch (error) {
+    console.error('Error deleting contact:', error)
+
+    return { isSuccess: false, message: 'Failed to delete contact' }
+  }
+}
+
 
 // Additional action methods would follow...
 ```
@@ -258,7 +260,7 @@ export async function getContactsAction(
 For lists that may contain many items, implement pagination:
 
 ```typescript
-export async function getPaginatedContactsAction(
+export async function getPaginatedContacts(
   userId: string,
   page = 1,
   pageSize = 10
@@ -288,6 +290,7 @@ export async function getPaginatedContactsAction(
     }
   } catch (error) {
     console.error("Error fetching paginated contacts:", error)
+
     return { isSuccess: false, message: "Failed to retrieve contacts" }
   }
 }
@@ -305,7 +308,7 @@ deletedAt: timestamp("deleted_at", { withTimezone: true }),
 const nonDeletedFilter = isNull(contactsTable.deletedAt)
 
 // Soft delete action
-export async function softDeleteContactAction(
+export async function softDeleteContact(
   id: string
 ): Promise<ActionState<void>> {
   try {
@@ -326,6 +329,7 @@ export async function softDeleteContactAction(
     }
   } catch (error) {
     console.error("Error soft-deleting contact:", error)
+
     return { isSuccess: false, message: "Failed to delete contact" }
   }
 }

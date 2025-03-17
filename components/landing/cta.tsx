@@ -1,33 +1,17 @@
-"use client"
+'use client'
 
-import { Button } from "@/components/ui/button"
-import { AnimatedGradientText } from "@/components/magicui/animated-gradient-text"
-import { cn } from "@/lib/utils"
-import { motion } from "framer-motion"
-import { Github, ArrowRight, ExternalLink } from "lucide-react"
-import Link from "next/link"
-import { useEffect, useState } from "react"
+import { motion } from 'framer-motion'
+import { ExternalLink, Github } from 'lucide-react'
+import Link from 'next/link'
+
+import { AnimatedGradientText } from '@/components/magicui/animated-gradient-text'
+import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
 
 export const CTASection = () => {
-  const [mounted, setMounted] = useState(false)
-
-  useEffect(() => {
-    setMounted(true)
-  }, [])
-
   return (
-    <div className="bg-muted/30 container mx-auto px-4 py-24">
-      {!mounted ? (
-        // Placeholder while loading
-        <div className="flex flex-col items-center justify-center">
-          <div className="bg-muted mx-auto mb-8 h-10 w-96 animate-pulse rounded-md"></div>
-          <div className="bg-muted mx-auto mb-8 h-6 w-80 animate-pulse rounded-md"></div>
-          <div className="flex gap-4">
-            <div className="bg-muted h-10 w-40 animate-pulse rounded-md"></div>
-            <div className="bg-muted h-10 w-40 animate-pulse rounded-md"></div>
-          </div>
-        </div>
-      ) : (
+    <div className="bg-muted/30 container px-4 py-24">
+      {
         // Actual content when mounted
         <motion.div
           initial={{ opacity: 0 }}
@@ -40,7 +24,7 @@ export const CTASection = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1 }}
             className={cn(
-              "mb-6 text-balance text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl"
+              'mb-6 text-3xl font-bold tracking-tight text-balance sm:text-4xl md:text-5xl',
             )}
           >
             <AnimatedGradientText>Ready for Production</AnimatedGradientText>
@@ -52,14 +36,16 @@ export const CTASection = () => {
             transition={{ duration: 0.5, delay: 0.2 }}
             className="text-muted-foreground mb-8 max-w-[700px] text-balance md:text-xl"
           >
-            Get started with a complete stack including authentication, database, server actions, and deployment configuration. Includes a working contacts feature as a template for your own functionality.
+            Get started with a complete stack including authentication, database, server actions,
+            and deployment configuration. Includes a working contacts feature as a template for your
+            own functionality.
           </motion.p>
 
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.3 }}
-            className="flex flex-col space-y-4 sm:flex-row sm:space-x-4 sm:space-y-0"
+            className="flex flex-col space-y-4 sm:flex-row sm:space-y-0 sm:space-x-4"
           >
             <Button asChild size="lg">
               <Link
@@ -86,7 +72,7 @@ export const CTASection = () => {
             </Button>
           </motion.div>
         </motion.div>
-      )}
+      }
     </div>
   )
 }

@@ -18,7 +18,7 @@ Created by the team at [Materialize Labs](https://materializelabs.com).
 ## 📚 Tech Stack
 
 ### Frontend
-- [Next.js 14](https://nextjs.org/docs) - React framework with App Router
+- [Next.js 15](https://nextjs.org/docs) - React framework with App Router
 - [Tailwind CSS](https://tailwindcss.com/docs/guides/nextjs) - Utility-first CSS
 - [Shadcn/ui](https://ui.shadcn.com/docs) - Accessible component system
 - [Framer Motion](https://www.framer.com/motion) - Animation library

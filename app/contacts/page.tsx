@@ -5,33 +5,29 @@ Updated with a cleaner design to match the site's overall aesthetic and to ensur
 </ai_context>
 */
 
-"use server"
+'use server'
 
-import {
-  createContactAction,
-  deleteContactAction,
-  getContactsAction,
-  updateContactAction
-} from "@/actions/db/contacts-actions"
-import { getProfileByUserIdAction } from "@/actions/db/profiles-actions"
-import { ContactList } from "@/app/contacts/_components/contact-list"
-import { auth } from "@clerk/nextjs/server"
-import { redirect } from "next/navigation"
+import { auth } from '@clerk/nextjs/server'
+import { redirect } from 'next/navigation'
+
+import { getContacts } from '@/actions/db/contacts'
+import { getProfileByUserId } from '@/actions/db/profiles'
+import { ContactList } from '@/app/contacts/_components/contact-list'
 
 export default async function ContactsPage() {
   const { userId } = await auth()
 
   if (!userId) {
-    return redirect("/login")
+    return redirect('/login')
   }
 
-  const { data: profile } = await getProfileByUserIdAction(userId)
+  const { data: profile } = await getProfileByUserId(userId)
 
   if (!profile) {
-    return redirect("/signup")
+    return redirect('/signup')
   }
 
-  const contacts = await getContactsAction(userId)
+  const contacts = await getContacts(userId)
 
   return (
     <div className="w-full">

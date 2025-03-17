@@ -1,11 +1,12 @@
-"use client"
+'use client'
 
-import { Button } from "@/components/ui/button"
-import { useSidebar } from "@/components/ui/sidebar"
-import { ThemeSwitcher } from "@/components/utilities/theme-switcher"
-import { UserButton } from "@clerk/nextjs"
-import { Contact, Menu } from "lucide-react"
-import { useEffect, useState } from "react"
+import { UserButton } from '@clerk/nextjs'
+import { Contact, Menu } from 'lucide-react'
+import { useEffect, useState } from 'react'
+
+import { Button } from '@/components/ui/button'
+import { useSidebar } from '@/components/ui/sidebar'
+import ThemeSwitcher from '@/components/utilities/theme-switcher'
 
 export function ContactsNavbar() {
   const { toggleSidebar } = useSidebar()
@@ -16,26 +17,19 @@ export function ContactsNavbar() {
       setIsScrolled(window.scrollY > 0)
     }
 
-    window.addEventListener("scroll", handleScroll)
-    return () => window.removeEventListener("scroll", handleScroll)
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
   return (
     <header
       className={`sticky top-0 z-40 w-full ${
-        isScrolled
-          ? "border-border bg-background/90 border-b backdrop-blur-sm"
-          : "bg-background"
+        isScrolled ? 'border-border bg-background/90 border-b backdrop-blur-xs' : 'bg-background'
       } transition-colors duration-200`}
     >
       <div className="flex h-14 items-center justify-between px-4">
         <div className="flex items-center">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={toggleSidebar}
-            className="mr-2 md:hidden"
-          >
+          <Button variant="ghost" size="icon" onClick={toggleSidebar} className="mr-2 md:hidden">
             <Menu className="size-5" />
             <span className="sr-only">Toggle sidebar</span>
           </Button>

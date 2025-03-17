@@ -1,35 +1,31 @@
-import {
-  createProfileAction,
-  getProfileByUserIdAction
-} from "@/actions/db/profiles-actions"
-import { Toaster } from "@/components/ui/toaster"
-import { Providers } from "@/components/utilities/providers"
-import { TailwindIndicator } from "@/components/utilities/tailwind-indicator"
-import { cn } from "@/lib/utils"
-import { ClerkProvider } from "@clerk/nextjs"
-import { auth } from "@clerk/nextjs/server"
-import type { Metadata } from "next"
-import { Inter } from "next/font/google"
-import "./globals.css"
+import './globals.css'
 
-const inter = Inter({ subsets: ["latin"] })
+import { ClerkProvider } from '@clerk/nextjs'
+import { auth } from '@clerk/nextjs/server'
+import type { Metadata } from 'next'
+import { Inter } from 'next/font/google'
+
+import { createProfile, getProfileByUserId } from '@/actions/db/profiles'
+import { Toaster } from '@/components/ui/sonner'
+import { Providers } from '@/components/utilities/providers'
+import { TailwindIndicator } from '@/components/utilities/tailwind-indicator'
+import { cn } from '@/lib/utils'
+
+const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: "Materialize Labs AI-Optimized Starter App",
-  description: "A full-stack web app template."
+  title: 'Materialize Labs AI-Optimized Starter App',
+  description: 'A full-stack web app template.',
 }
 
-export default async function RootLayout({
-  children
-}: {
-  children: React.ReactNode
-}) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const { userId } = await auth()
 
   if (userId) {
-    const profileRes = await getProfileByUserIdAction(userId)
+    const profileRes = await getProfileByUserId(userId)
+
     if (!profileRes.isSuccess) {
-      await createProfileAction({ userId })
+      await createProfile({ userId })
     }
   }
 
@@ -38,8 +34,8 @@ export default async function RootLayout({
       <html lang="en" suppressHydrationWarning>
         <body
           className={cn(
-            "bg-background mx-auto min-h-screen w-full scroll-smooth antialiased",
-            inter.className
+            'bg-background mx-auto min-h-screen w-full scroll-smooth antialiased',
+            inter.className,
           )}
         >
           <Providers

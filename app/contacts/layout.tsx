@@ -1,30 +1,28 @@
-import { getProfileByUserIdAction } from "@/actions/db/profiles-actions"
-import { AppSidebar } from "@/components/sidebar/app-sidebar"
-import { SidebarProvider } from "@/components/ui/sidebar"
-import { auth } from "@clerk/nextjs/server"
-import { redirect } from "next/navigation"
-import { ContactsNavbar } from "./_components/contacts-navbar"
+import { auth } from '@clerk/nextjs/server'
+import { redirect } from 'next/navigation'
+
+import { getProfileByUserId } from '@/actions/db/profiles'
+import { AppSidebar } from '@/components/sidebar/app-sidebar'
+import { SidebarProvider } from '@/components/ui/sidebar'
+
+import { ContactsNavbar } from './_components/contacts-navbar'
 
 export const metadata = {
-  title: "Contacts | AI-Optimized Starter App",
-  description: "Manage your contacts"
+  title: 'Contacts | AI-Optimized Starter App',
+  description: 'Manage your contacts',
 }
 
-export default async function ContactsLayout({
-  children
-}: {
-  children: React.ReactNode
-}) {
+export default async function ContactsLayout({ children }: { children: React.ReactNode }) {
   const { userId } = await auth()
 
   if (!userId) {
-    return redirect("/login")
+    return redirect('/login')
   }
 
-  const { data: profile } = await getProfileByUserIdAction(userId)
+  const { data: profile } = await getProfileByUserId(userId)
 
   if (!profile) {
-    return redirect("/signup")
+    return redirect('/signup')
   }
 
   return (

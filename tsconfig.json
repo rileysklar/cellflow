@@ -2,9 +2,7 @@
 <ai_context>
 Configures the TypeScript compiler options for the app.
 </ai_context>
-*/
-
-{
+*/ {
   "compilerOptions": {
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
