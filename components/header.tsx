@@ -47,7 +47,7 @@ export default function Header() {
         </div>
 
         <nav className="absolute left-1/2 hidden -translate-x-1/2 space-x-2 font-semibold md:flex">
-          {navLinks.map(link => (
+          {navLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}

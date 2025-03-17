@@ -53,7 +53,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <div className="space-y-1">
           <p className="text-muted-foreground px-2 py-1.5 text-xs font-medium">Navigation</p>
 
-          {navItems.map(item => {
+          {navItems.map((item) => {
             const isActive = item.href === '/' ? pathname === '/' : pathname?.startsWith(item.href)
 
             return (

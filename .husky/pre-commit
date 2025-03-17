@@ -1,5 +1,1 @@
-#!/usr/bin/env sh
-
-. "$(dirname -- "$0")/_/husky.sh"
-
-npm run clean && git add .
+npx lint-staged

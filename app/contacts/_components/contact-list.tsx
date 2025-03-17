@@ -42,8 +42,8 @@ export function ContactList({ userId, initialContacts }: ContactListProps) {
         })
 
         if (result.isSuccess) {
-          setContacts(prevContacts =>
-            prevContacts.map(contact => (contact.id === editingId ? result.data : contact)),
+          setContacts((prevContacts) =>
+            prevContacts.map((contact) => (contact.id === editingId ? result.data : contact)),
           )
           resetForm()
         } else {
@@ -60,7 +60,7 @@ export function ContactList({ userId, initialContacts }: ContactListProps) {
           createdAt: new Date(),
           updatedAt: new Date(),
         }
-        setContacts(prevContacts => [...prevContacts, newContactData])
+        setContacts((prevContacts) => [...prevContacts, newContactData])
         resetForm()
 
         const result = await createContact({
@@ -72,13 +72,15 @@ export function ContactList({ userId, initialContacts }: ContactListProps) {
         })
 
         if (result.isSuccess) {
-          setContacts(prevContacts =>
-            prevContacts.map(contact => (contact.id === newContactData.id ? result.data : contact)),
+          setContacts((prevContacts) =>
+            prevContacts.map((contact) =>
+              contact.id === newContactData.id ? result.data : contact,
+            ),
           )
         } else {
           console.error('Error creating contact:', result.message)
-          setContacts(prevContacts =>
-            prevContacts.filter(contact => contact.id !== newContactData.id),
+          setContacts((prevContacts) =>
+            prevContacts.filter((contact) => contact.id !== newContactData.id),
           )
         }
       }
@@ -94,7 +96,7 @@ export function ContactList({ userId, initialContacts }: ContactListProps) {
   }
 
   const handleRemoveContact = async (id: string) => {
-    setContacts(prevContacts => prevContacts.filter(contact => contact.id !== id))
+    setContacts((prevContacts) => prevContacts.filter((contact) => contact.id !== id))
     await deleteContact(id)
   }
 
@@ -115,7 +117,7 @@ export function ContactList({ userId, initialContacts }: ContactListProps) {
                 id="name"
                 type="text"
                 value={name}
-                onChange={e => setName(e.target.value)}
+                onChange={(e) => setName(e.target.value)}
                 placeholder="John Doe"
                 required
               />
@@ -127,7 +129,7 @@ export function ContactList({ userId, initialContacts }: ContactListProps) {
                 id="email"
                 type="email"
                 value={email}
-                onChange={e => setEmail(e.target.value)}
+                onChange={(e) => setEmail(e.target.value)}
                 placeholder="john@example.com"
               />
             </div>
@@ -140,7 +142,7 @@ export function ContactList({ userId, initialContacts }: ContactListProps) {
                 id="phone"
                 type="tel"
                 value={phone}
-                onChange={e => setPhone(e.target.value)}
+                onChange={(e) => setPhone(e.target.value)}
                 placeholder="(123) 456-7890"
               />
             </div>
@@ -151,7 +153,7 @@ export function ContactList({ userId, initialContacts }: ContactListProps) {
                 id="notes"
                 type="text"
                 value={notes}
-                onChange={e => setNotes(e.target.value)}
+                onChange={(e) => setNotes(e.target.value)}
                 placeholder="Additional information"
               />
             </div>
@@ -182,7 +184,7 @@ export function ContactList({ userId, initialContacts }: ContactListProps) {
           </Card>
         ) : (
           <div className={`grid gap-4 ${contacts.length === 1 ? 'grid-cols-1' : 'md:grid-cols-2'}`}>
-            {contacts.map(contact => (
+            {contacts.map((contact) => (
               <Card key={contact.id}>
                 <CardContent className="p-5">
                   <div className="flex items-center justify-between">
