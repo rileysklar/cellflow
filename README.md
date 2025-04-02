@@ -348,3 +348,54 @@ If you need help or have questions, please contact [alex@materializelabs.com](ma
 ## 📄 License
 
 This project is licensed under the MIT License.
+
+# Manufacturing Efficiency Tracking System
+
+This project is designed for industrial production facilities to track and optimize efficiency.
+
+## Project Structure
+
+The project follows a clean, modular architecture:
+
+```
+/app                        # Next.js application routes
+  /dashboard                # Dashboard route
+    /_components            # Dashboard-specific components
+      /dashboard-header.tsx # Header with breadcrumb navigation
+      /dashboard-sidebar.tsx # Main navigation sidebar
+      /use-sidebar.tsx      # Sidebar context and hook
+    /layout.tsx             # Dashboard layout wrapper
+    /page.tsx               # Main dashboard page
+  /contacts                 # Contacts route
+    /_components            # Contact-specific components
+/lib                        # Shared libraries and components
+  /components               # Global shared components
+    /ui                     # UI components (Button, Card, etc.)
+    /landing                # Landing page components
+```
+
+## Technology Stack
+
+- **Frontend**: Next.js, React, ShadCN UI
+- **Backend**: FastAPI
+- **Database**: PostgreSQL
+- **Authentication**: Clerk
+- **Deployment**: Fly.io, Docker
+
+## Development
+
+To run the development server:
+
+```bash
+pnpm dev
+```
+
+## Component Organization
+
+We follow a route-based component organization approach:
+
+- Route-specific components are located in `_components` directories within their respective routes
+- Shared UI components are in `lib/components/ui`
+- Global reusable components are in `lib/components`
+
+This structure ensures clear separation of concerns and improves maintainability.

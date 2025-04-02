@@ -3,234 +3,229 @@
 import React from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { UserButton, OrganizationSwitcher, useOrganization, useUser } from '@clerk/nextjs'
+import { UserButton, useOrganization, useUser, OrganizationSwitcher } from '@clerk/nextjs'
 import { 
-  BarChart3, 
-  Building2, 
-  Factory, 
-  Gauge, 
-  LayoutDashboard, 
-  Settings, 
-  Users2 
+  BarChart3,
+  BoxIcon,
+  Building2,
+  ChevronDownIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  ChevronsUpDown,
+  Contact,
+  Gauge,
+  Home,
+  LayoutDashboard,
+  PanelLeftIcon,
+  Settings,
+  X,
 } from 'lucide-react'
 
+import { Button } from '@/lib/components/ui/button'
+import { useSidebar } from './use-sidebar'
 import { cn } from '@/lib/utils'
-import { useState, useEffect } from 'react'
-import { SelectProfile } from '@/db/schema/profiles'
-import { SelectCompany } from '@/db/schema/companies'
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarGroupLabel,
-  SidebarHeader,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarProvider,
-  SidebarSeparator,
-  SidebarTrigger,
-} from '@/lib/components/ui/sidebar'
-
-// Action response type - for consistency with our server actions
-type ActionResponse<T> = {
-  success: boolean;
-  message: string;
-  data?: T;
-};
-
-// Mock functions to avoid import errors - replace with real imports when backend issues are fixed
-async function getOrCreateProfile(): Promise<ActionResponse<SelectProfile>> {
-  return { success: true, message: "Profile loaded", data: { userId: "user123", role: "admin" } as SelectProfile };
-}
-
-async function getOrCreateCompanyFromOrganization(): Promise<ActionResponse<SelectCompany>> {
-  return { success: true, message: "Company loaded", data: { id: "company123", name: "Example Company", industry: "Manufacturing" } as SelectCompany };
-}
-
-interface NavItemProps {
-  href: string
-  icon: React.ReactNode
-  label: string
-  isActive?: boolean
-}
-
-function NavItem({ href, icon, label, isActive }: NavItemProps) {
-  return (
-    <SidebarMenuItem>
-      <SidebarMenuButton asChild isActive={isActive}>
-        <Link href={href}>
-          {icon}
-          <span>{label}</span>
-        </Link>
-      </SidebarMenuButton>
-    </SidebarMenuItem>
-  )
-}
 
 export function DashboardSidebar() {
   const pathname = usePathname()
+  const { isOpen, isCollapsed, toggleSidebar, toggleCollapsed } = useSidebar()
   const { user } = useUser()
   const { organization } = useOrganization()
-  const [profile, setProfile] = useState<SelectProfile | null>(null)
-  const [company, setCompany] = useState<SelectCompany | null>(null)
 
-  // Load profile data when user is available
-  useEffect(() => {
-    async function loadData() {
-      if (user) {
-        // Get or create user profile
-        const profileResult = await getOrCreateProfile()
-        if (profileResult.success && profileResult.data) {
-          setProfile(profileResult.data)
-        }
-
-        // Get or create company from organization
-        const companyResult = await getOrCreateCompanyFromOrganization()
-        if (companyResult.success && companyResult.data) {
-          setCompany(companyResult.data)
-        }
-      }
-    }
-    
-    loadData()
-  }, [user, organization?.id])
-
-  // Define navigation items
-  const platformItems = [
+  // Navigation items based on existing routes
+  const navigationItems = [
     {
-      href: "/dashboard",
-      icon: <LayoutDashboard className="h-4 w-4 mr-2" />,
-      label: "Dashboard",
+      title: 'Dashboard',
+      icon: <LayoutDashboard className="h-4 w-4" />,
+      href: '/dashboard',
       isActive: pathname === '/dashboard'
     },
     {
-      href: "/sites",
-      icon: <Building2 className="h-4 w-4 mr-2" />,
-      label: "Sites",
-      isActive: pathname.startsWith('/sites')
+      title: 'Companies',
+      icon: <Building2 className="h-4 w-4" />,
+      href: '/companies',
+      isActive: pathname?.startsWith('/companies')
     },
     {
-      href: "/value-streams",
-      icon: <Gauge className="h-4 w-4 mr-2" />,
-      label: "Value Streams",
-      isActive: pathname.startsWith('/value-streams')
+      title: 'Contacts',
+      icon: <Contact className="h-4 w-4" />,
+      href: '/contacts',
+      isActive: pathname?.startsWith('/contacts')
     },
     {
-      href: "/cells",
-      icon: <Factory className="h-4 w-4 mr-2" />,
-      label: "Cells",
-      isActive: pathname.startsWith('/cells')
-    },
-    {
-      href: "/metrics",
-      icon: <BarChart3 className="h-4 w-4 mr-2" />,
-      label: "Metrics",
-      isActive: pathname.startsWith('/metrics')
-    },
-    {
-      href: "/operators",
-      icon: <Users2 className="h-4 w-4 mr-2" />,
-      label: "Operators",
-      isActive: pathname.startsWith('/operators')
+      title: 'Settings',
+      icon: <Settings className="h-4 w-4" />,
+      href: '/settings',
+      isActive: pathname?.startsWith('/settings')
     }
   ]
 
   return (
-    <Sidebar>
-      <SidebarHeader className="border-b p-4">
-        <div className="flex items-center space-x-2">
-          <Factory className="h-6 w-6" />
-          <span className="font-semibold text-xl">CellFlow</span>
-        </div>
-      </SidebarHeader>
-
-      <SidebarContent className="p-2">
-        {/* Organization Section */}
-        <SidebarGroup>
-          <SidebarGroupLabel className="px-2 py-1.5">Company</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <div className="px-3 py-2">
-              <OrganizationSwitcher 
+    <>
+      {/* Mobile only: Close button */}
+      <Button 
+        variant="outline" 
+        size="icon" 
+        onClick={toggleSidebar}
+        className={`fixed bottom-4 right-4 z-50 rounded-full shadow-md lg:hidden ${isOpen ? 'flex' : 'hidden'}`}
+      >
+        <X className="h-4 w-4" />
+        <span className="sr-only">Close Sidebar</span>
+      </Button>
+      
+      {/* Mobile only: Overlay */}
+      {isOpen && (
+        <div 
+          className="fixed inset-0 z-10 bg-black/50 lg:hidden" 
+          onClick={toggleSidebar}
+          aria-hidden="true"
+        />
+      )}
+    
+      <aside 
+        className={cn(
+          "fixed inset-y-0 left-0 z-20 flex flex-col bg-sidebar text-sidebar-foreground border-r border-sidebar-border",
+          isCollapsed ? "w-16" : "w-64",
+          "transform transition-all duration-300 ease-in-out",
+          !isOpen && "-translate-x-full lg:translate-x-0"
+        )}
+      >
+        {/* Sidebar header */}
+        <div className="border-b border-sidebar-border p-4">
+          {isCollapsed ? (
+            <div className="flex justify-center">
+              <div className="bg-sidebar-primary rounded-lg p-2 flex items-center justify-center min-w-[32px] min-h-[32px]">
+                {organization?.imageUrl ? (
+                  <img
+                    src={organization.imageUrl}
+                    alt={organization?.name || 'Organization'}
+                    className="h-4 w-4"
+                  />
+                ) : (
+                  <BoxIcon className="h-4 w-4 text-sidebar-primary-foreground" />
+                )}
+              </div>
+            </div>
+          ) : (
+            <div className="relative">
+              <button
+                type="button"
+                className="flex w-full items-center gap-2 overflow-hidden rounded-md p-2 text-left text-sm h-12 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+              >
+                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
+                  {organization?.imageUrl ? (
+                    <img
+                      src={organization.imageUrl}
+                      alt={organization?.name || 'Organization'}
+                      className="h-4 w-4"
+                    />
+                  ) : (
+                    <BoxIcon className="h-4 w-4" />
+                  )}
+                </div>
+                
+                <div className="grid flex-1 text-left text-sm leading-tight">
+                  <span className="truncate font-semibold">
+                    {organization?.name || 'Select Organization'}
+                  </span>
+                  <span className="truncate text-xs">
+                    {organization?.membersCount 
+                      ? `${organization.membersCount} ${organization.membersCount === 1 ? 'member' : 'members'}`
+                      : 'No members'}
+                  </span>
+                </div>
+                
+                <ChevronsUpDown className="size-4 ml-auto" />
+              </button>
+              
+              {/* Overlay the actual switcher on top */}
+              <OrganizationSwitcher
                 hidePersonal
                 afterCreateOrganizationUrl="/dashboard"
                 afterLeaveOrganizationUrl="/dashboard"
                 afterSelectOrganizationUrl="/dashboard"
                 appearance={{
                   elements: {
-                    rootBox: "w-full",
-                    organizationSwitcherTrigger: "w-full bg-secondary/50 hover:bg-secondary/80 rounded-md p-2"
+                    rootBox: "absolute inset-0",
+                    organizationSwitcherTrigger: "opacity-0 w-full h-full cursor-pointer"
                   }
                 }}
               />
-              {company && (
-                <div className="mt-2 text-xs text-muted-foreground overflow-hidden">
-                  <p className="truncate">{company.industry || 'No industry set'}</p>
-                </div>
-              )}
             </div>
-          </SidebarGroupContent>
-        </SidebarGroup>
+          )}
+        </div>
 
-        <SidebarSeparator className="my-2" />
-
-        {/* Platform Section */}
-        <SidebarGroup>
-          <SidebarGroupLabel className="px-2 py-1.5">Platform</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {platformItems.map((item) => (
-                <NavItem 
-                  key={item.href}
-                  href={item.href} 
-                  icon={item.icon}
-                  label={item.label}
-                  isActive={item.isActive}
-                />
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        <SidebarSeparator className="my-2" />
-
-        {/* Settings Section */}
-        <SidebarGroup>
-          <SidebarGroupLabel className="px-2 py-1.5">Settings</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              <NavItem 
-                href="/settings" 
-                icon={<Settings className="h-4 w-4 mr-2" />}
-                label="Settings"
-                isActive={pathname.startsWith('/settings')}
-              />
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-      </SidebarContent>
-
-      <SidebarFooter className="border-t p-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-2">
+        <div className="flex-1 overflow-auto">
+          {/* Navigation */}
+          <div className="p-2">
+            {!isCollapsed && (
+              <div className="text-sidebar-foreground/70 flex h-8 shrink-0 items-center rounded-md px-2 text-xs font-medium">Navigation</div>
+            )}
+            <div className="w-full text-sm">
+              <ul className={cn(
+                "flex w-full min-w-0 flex-col gap-1",
+                isCollapsed && "items-center"
+              )}>
+                {navigationItems.map((item) => (
+                  <li key={item.title} className="group/menu-item relative">
+                    <Link 
+                      href={item.href} 
+                      title={isCollapsed ? item.title : undefined}
+                      className={cn(
+                        "flex items-center gap-2 overflow-hidden rounded-md p-2 text-left text-sm",
+                        isCollapsed && "justify-center",
+                        item.isActive 
+                          ? 'bg-sidebar-accent text-sidebar-accent-foreground font-medium' 
+                          : 'text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground',
+                        isCollapsed ? "w-10 h-10 mx-auto" : "w-full"
+                      )}
+                    >
+                      <div className="flex-shrink-0">
+                        {item.icon}
+                      </div>
+                      {!isCollapsed && <span className="truncate">{item.title}</span>}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+        
+       
+        {/* User profile */}
+        <div className={cn(
+          "mt-auto p-4 border-t border-sidebar-border",
+          isCollapsed && "flex justify-center p-2"
+        )}>
+          {isCollapsed ? (
             <UserButton 
-              afterSignOutUrl="/login"
+              afterSignOutUrl="/login" 
               appearance={{
                 elements: {
-                  userButtonAvatarBox: "h-8 w-8"
+                  userButtonAvatarBox: "h-8 w-8",
+                  userButtonBox: "text-sidebar-foreground"
                 }
               }}
             />
-            <div className="flex flex-col text-sm">
-              <span className="font-medium">{user?.fullName || 'User'}</span>
-              <span className="text-xs text-muted-foreground">{profile?.role || 'Loading...'}</span>
+          ) : (
+            <div className="flex items-center gap-2">
+              <UserButton 
+                afterSignOutUrl="/login" 
+                appearance={{
+                  elements: {
+                    userButtonAvatarBox: "h-8 w-8",
+                    userButtonBox: "text-sidebar-foreground"
+                  }
+                }}
+              />
+              <div className="flex flex-col">
+                <div className="text-sm font-medium text-sidebar-foreground">{user?.fullName || user?.username || 'User'}</div>
+                <div className="text-xs text-sidebar-foreground/70">{user?.primaryEmailAddress?.emailAddress || ''}</div>
+              </div>
             </div>
-          </div>
-          <SidebarTrigger />
+          )}
         </div>
-      </SidebarFooter>
-    </Sidebar>
+      </aside>
+    </>
   )
 } 

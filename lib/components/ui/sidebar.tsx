@@ -2,7 +2,7 @@
 
 import { Slot } from '@radix-ui/react-slot'
 import { cva, VariantProps } from 'class-variance-authority'
-import { PanelLeftIcon } from 'lucide-react'
+import { PanelLeftIcon, ChevronRightIcon } from 'lucide-react'
 import * as React from 'react'
 
 import { Button } from '@/lib/components/ui/button'
@@ -330,6 +330,101 @@ function SidebarHeader({ className, ...props }: React.ComponentProps<'div'>) {
       className={cn('flex flex-col gap-2 p-2', className)}
       {...props}
     />
+  )
+}
+
+function SidebarBreadcrumb({
+  items = [],
+  className,
+  ...props
+}: React.ComponentProps<'nav'> & {
+  items?: Array<{ title: string; href?: string; active?: boolean }>
+}) {
+  return (
+    <nav
+      aria-label="breadcrumb"
+      data-slot="sidebar-breadcrumb"
+      data-sidebar="breadcrumb"
+      className={cn('', className)}
+      {...props}
+    >
+      <ol className="flex flex-wrap items-center gap-1.5 break-words text-sm text-muted-foreground sm:gap-2.5">
+        {items.map((item, index) => (
+          <React.Fragment key={index}>
+            <li className={cn('items-center gap-1.5', index === 0 ? 'hidden md:block' : '')}>
+              {item.href && !item.active ? (
+                <a className="transition-colors hover:text-foreground" href={item.href}>
+                  {item.title}
+                </a>
+              ) : (
+                <span
+                  role={item.active ? 'link' : undefined}
+                  aria-disabled={item.active ? 'true' : undefined}
+                  aria-current={item.active ? 'page' : undefined}
+                  className={cn(item.active && 'font-normal text-foreground')}
+                >
+                  {item.title}
+                </span>
+              )}
+            </li>
+            {index < items.length - 1 && (
+              <li
+                role="presentation"
+                aria-hidden="true"
+                className={cn('[&>svg]:w-3.5 [&>svg]:h-3.5', index === 0 ? 'hidden md:block' : '')}
+              >
+                <ChevronRightIcon />
+              </li>
+            )}
+          </React.Fragment>
+        ))}
+      </ol>
+    </nav>
+  )
+}
+
+function SidebarHeaderWithNav({
+  items = [],
+  className,
+  children,
+  ...props
+}: React.ComponentProps<'header'> & {
+  items?: Array<{ title: string; href?: string; active?: boolean }>
+}) {
+  const { toggleSidebar } = useSidebar()
+  
+  return (
+    <header
+      data-slot="sidebar-header-nav"
+      data-sidebar="header-nav"
+      className={cn(
+        'flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12',
+        className
+      )}
+      {...props}
+    >
+      <div className="flex items-center gap-2 px-4">
+        <button
+          data-sidebar="trigger"
+          className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 hover:bg-accent hover:text-accent-foreground h-7 w-7 -ml-1"
+          onClick={toggleSidebar}
+        >
+          <PanelLeftIcon />
+          <span className="sr-only">Toggle Sidebar</span>
+        </button>
+        {items && items.length > 0 && (
+          <>
+            <div 
+              data-orientation="vertical" 
+              role="none" 
+              className="shrink-0 bg-border w-[1px] mr-2 h-4"
+            />
+            <SidebarBreadcrumb items={items} />
+          </>
+        )}
+        {children}
+      </div>
+    </header>
   )
 }
 
@@ -680,6 +775,8 @@ export {
   SidebarGroupContent,
   SidebarGroupLabel,
   SidebarHeader,
+  SidebarHeaderWithNav,
+  SidebarBreadcrumb,
   SidebarInput,
   SidebarInset,
   SidebarMenu,
